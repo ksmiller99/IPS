@@ -279,18 +279,10 @@ public class High5IPS extends JFrame {
     
 	public static void main(String[] args) {
 		
-		System.out.println("Kevin's laptop here!");
-		System.out.println("Kevin's work PC here!");
-		System.out.println("Cici is here");
-		System.out.println("Andrew too.");
-		System.out.println("ZUP!!");
-		System.out.println("Grrrrr!!");		
-		
 		High5IPS me = new High5IPS();
         me.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        me.setExtendedState(JFrame.MAXIMIZED_BOTH); 
         me.setVisible(true);
-  
-
 	}
 
 
