@@ -1,9 +1,9 @@
-package Ips;
+package ips.high5.cmpt594;
 /**
  *The description
  *of the class
  */
-public class  UndoStack {
+public class  Sharpener {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +18,7 @@ public class  UndoStack {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public UndoStack() {
+    public Sharpener() {
     }
 
         /**
@@ -34,25 +34,15 @@ public class  UndoStack {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsImage[] stack;
-
+    private int sharpenLevel;
 
 
     /**
-     * @param img 
      * @return
      */
-    public void push(IpsImage img) {
+    public void sharpen() {
         // TODO implement here
         
-    }
-
-    /**
-     * @return
-     */
-    public IpsImage pop() {
-        // TODO implement here
-        return null;
     }
 
 }

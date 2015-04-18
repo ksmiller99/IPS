@@ -1,4 +1,4 @@
-package Ips;
+package ips.high5.cmpt594;
 import java.awt.event.ActionEvent;
 /**
  *The description

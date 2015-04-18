@@ -1,9 +1,9 @@
-package Ips;
+package ips.high5.cmpt594;
 /**
  *The description
  *of the class
  */
-public class  IpsMenuItem2 {
+public class  UndoStack {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +18,7 @@ public class  IpsMenuItem2 {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsMenuItem2() {
+    public UndoStack() {
     }
 
         /**
@@ -34,20 +34,25 @@ public class  IpsMenuItem2 {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    private String itemText;
-
-
-
+    public IpsImage[] stack;
 
 
 
     /**
-     * @param IpsActionListener 
+     * @param img 
      * @return
      */
-    public void addIpsActionListener(IpsActionListener ial) {
+    public void push(IpsImage img) {
         // TODO implement here
         
+    }
+
+    /**
+     * @return
+     */
+    public IpsImage pop() {
+        // TODO implement here
+        return null;
     }
 
 }

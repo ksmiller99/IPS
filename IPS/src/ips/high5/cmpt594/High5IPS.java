@@ -1,4 +1,4 @@
-package Ips;
+package ips.high5.cmpt594;
 /**
  *This is the main class that controls the application.
  *The Image Processing system allows a user to upload 

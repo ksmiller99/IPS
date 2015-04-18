@@ -1,9 +1,9 @@
-package Ips;
+package ips.high5.cmpt594;
 /**
  *The description
  *of the class
  */
-public class  FeatureDetector {
+public class  IpsGrayscaleImage {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +18,7 @@ public class  FeatureDetector {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public FeatureDetector() {
+    public IpsGrayscaleImage() {
     }
 
         /**
@@ -34,23 +34,14 @@ public class  FeatureDetector {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsBinaryImage featuresImage;
-
-
-    /**
-     * @return
-     */
-    public void detectEdges() {
-        // TODO implement here
-        
-    }
+    private int [][] pixels;
 
     /**
      * @return
      */
-    public void detectLines() {
+    public IpsColorImage colorize() {
         // TODO implement here
-        
+        return null;
     }
 
 }

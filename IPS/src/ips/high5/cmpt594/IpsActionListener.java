@@ -1,9 +1,11 @@
-package Ips;
+package ips.high5.cmpt594;
+import java.awt.event.ActionEvent;
+
 /**
  *The description
  *of the class
  */
-public class  Sharpener {
+public class  IpsActionListener {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,29 +20,14 @@ public class  Sharpener {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public Sharpener() {
+    public IpsActionListener() {
     }
 
-        /**
-     *One-sentence description ending with a period - one and only one period in description.
-		 *Additional description information - as many lines as needed HTML tags OK
-		 *@author Team High Five
-		 *@author additional author, one line for each
-		 *@custom.export N/A
-		 *@custom.import N/A
-		 *@custom.precondition N/A
-		 *@custom.postcondition N/A
-		 *@throws 
-		 *@param parameterName parameter description
-		 *@return return description
-		 */
-    private int sharpenLevel;
-
-
     /**
+     * @param evt 
      * @return
      */
-    public void sharpen() {
+    private void actionPerformed(ActionEvent evt) {
         // TODO implement here
         
     }

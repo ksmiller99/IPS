@@ -1,9 +1,9 @@
-package Ips;
+package ips.high5.cmpt594;
 /**
  *The description
  *of the class
  */
-public class  IpsColorImage {
+public class  IpsMenu {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +18,7 @@ public class  IpsColorImage {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsColorImage() {
+    public IpsMenu() {
     }
 
         /**
@@ -34,14 +34,30 @@ public class  IpsColorImage {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    private int[][][] pixels;
+    private String menuText;
+
+
+
+
+
+
 
     /**
+     * @param menu 
      * @return
      */
-    public IpsGrayscaleImage toGrayscale() {
-    	// TODO implement here
-    	return null;
+    public void add(IpsMenu menu) {
+        // TODO implement here
+        
+    }
+
+    /**
+     * @param menuItem 
+     * @return
+     */
+    public void add(IpsMenuItem menuItem) {
+        // TODO implement here
+        
     }
 
 }

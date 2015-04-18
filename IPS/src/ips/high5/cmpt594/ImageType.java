@@ -1,4 +1,4 @@
-package Ips;
+package ips.high5.cmpt594;
 
 /**
  *Description of enumeration 

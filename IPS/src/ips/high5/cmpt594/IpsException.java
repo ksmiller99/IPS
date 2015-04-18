@@ -1,9 +1,9 @@
-package Ips;
+package ips.high5.cmpt594;
 /**
  *The description
  *of the class
  */
-public class  IpsGrayscaleImage {
+public class  IpsException extends Exception{
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,30 +18,31 @@ public class  IpsGrayscaleImage {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsGrayscaleImage() {
+    public IpsException() {
     }
 
-        /**
+   /**
      *One-sentence description ending with a period - one and only one period in description.
-		 *Additional description information - as many lines as needed HTML tags OK
-		 *@author Team High Five
-		 *@author additional author, one line for each
-		 *@custom.export N/A
-		 *@custom.import N/A
-		 *@custom.precondition N/A
-		 *@custom.postcondition N/A
-		 *@throws 
-		 *@param parameterName parameter description
-		 *@return return description
-		 */
-    private int [][] pixels;
+	 *Additional description information - as many lines as needed HTML tags OK
+	 *@author Team High Five
+	 *@author additional author, one line for each
+	 *@custom.export N/A
+	 *@custom.import N/A
+	 *@custom.precondition N/A
+	 *@custom.postcondition N/A
+	 *@throws 
+	 *@param parameterName parameter description
+	 *@return return description
+	 */
+    public String message;
 
     /**
+     * @param msg 
      * @return
      */
-    public IpsColorImage colorize() {
+    public void IpsException(String msg) {
         // TODO implement here
-        return null;
+        
     }
 
 }

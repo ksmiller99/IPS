@@ -1,9 +1,9 @@
-package Ips;
+package ips.high5.cmpt594;
 /**
  *The description
  *of the class
  */
-public class  Mosaic {
+public class  IpsMenuItem {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +18,7 @@ public class  Mosaic {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public Mosaic() {
+    public IpsMenuItem() {
     }
 
         /**
@@ -34,13 +34,18 @@ public class  Mosaic {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsImage[] imageList;
+    private String itemText;
+
+
+
+
 
 
     /**
+     * @param IpsActionListener 
      * @return
      */
-    public void stitch() {
+    public void addIpsActionListener(IpsActionListener ial) {
         // TODO implement here
         
     }

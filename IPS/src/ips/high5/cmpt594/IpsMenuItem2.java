@@ -1,9 +1,9 @@
-package Ips;
+package ips.high5.cmpt594;
 /**
  *The description
  *of the class
  */
-public class  IpsBinaryImage {
+public class  IpsMenuItem2 {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +18,7 @@ public class  IpsBinaryImage {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsBinaryImage() {
+    public IpsMenuItem2() {
     }
 
         /**
@@ -34,6 +34,20 @@ public class  IpsBinaryImage {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    private boolean[][] pixels;
+    private String itemText;
+
+
+
+
+
+
+    /**
+     * @param IpsActionListener 
+     * @return
+     */
+    public void addIpsActionListener(IpsActionListener ial) {
+        // TODO implement here
+        
+    }
 
 }

@@ -1,9 +1,9 @@
-package Ips;
+package ips.high5.cmpt594;
 /**
  *The description
  *of the class
  */
-public class  IpsMenu {
+public class  FeatureDetector {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +18,7 @@ public class  IpsMenu {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsMenu() {
+    public FeatureDetector() {
     }
 
         /**
@@ -34,28 +34,21 @@ public class  IpsMenu {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    private String menuText;
-
-
-
-
-
+    public IpsBinaryImage featuresImage;
 
 
     /**
-     * @param menu 
      * @return
      */
-    public void add(IpsMenu menu) {
+    public void detectEdges() {
         // TODO implement here
         
     }
 
     /**
-     * @param menuItem 
      * @return
      */
-    public void add(IpsMenuItem menuItem) {
+    public void detectLines() {
         // TODO implement here
         
     }
