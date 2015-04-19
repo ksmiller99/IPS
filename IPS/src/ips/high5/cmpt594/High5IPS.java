@@ -8,6 +8,7 @@ package ips.high5.cmpt594;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -20,6 +21,7 @@ import java.awt.image.ImageFilter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Stack;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -55,7 +57,9 @@ public class High5IPS extends JFrame {
 		 */
     public High5IPS(){
         setTitle("High 5 Image Processing System");
-        //setSize(640, 480);
+        
+        //initialize 
+        undoStack = new Stack();
         
         // Creates a menubar for a JFrame
         JMenuBar  menuBar = new JMenuBar();
@@ -72,36 +76,50 @@ public class High5IPS extends JFrame {
         menuBar.add(helpMenu);
         
         // File Menu
-        JMenuItem openAction = new JMenuItem("Open");
-        JMenuItem saveAction = new JMenuItem("Save");
+        openAction = new JMenuItem("Open");
+        saveAction = new JMenuItem("Save");
+        saveAction.setEnabled(false);
         JMenu saveAsMenu = new JMenu("Save as...");
-        JMenuItem recentAction = new JMenuItem("Recent...");
-        JMenuItem saveasGSAction = new JMenuItem("Grayscale");
-        JMenuItem saveasRGBAction = new JMenuItem("Color...");
-        JMenuItem newMosaicAction = new JMenuItem("New Mosaic...");
-        JMenuItem closeAction = new JMenuItem("Close");
-        JMenuItem propertiesAction = new JMenuItem("Properties...");
-        JMenuItem exitAction = new JMenuItem("Exit");
+        saveAsMenu.setEnabled(false);
+        recentAction = new JMenuItem("Recent...");
+        recentAction.setEnabled(false);
+        newMosaicAction = new JMenuItem("New Mosaic...");
+        newMosaicAction.setEnabled(false);
+        closeAction = new JMenuItem("Close");
+        closeAction.setEnabled(false);
+        propertiesAction = new JMenuItem("Properties...");
+        propertiesAction.setEnabled(false);
+        exitAction = new JMenuItem("Exit");
         
         //Edit menu
-        JMenuItem undoAction = new JMenuItem("Undo");
-        JMenuItem redoAction = new JMenuItem("Redo");
-        JMenuItem zoominAction = new JMenuItem("Zoom in");
-        JMenuItem zoomoutAction = new JMenuItem("Zoom out");
-        JMenuItem equalizeAction = new JMenuItem("Equalize");
-        JMenuItem houghAction = new JMenuItem("Hough Transform...");
-        JMenuItem blendAction = new JMenuItem("Blend with...");
-        JMenuItem sharpenAction = new JMenuItem("Sharpen...");
+        undoAction = new JMenuItem("Undo");
+        undoAction.setEnabled(false);
+        redoAction = new JMenuItem("Redo");
+        redoAction.setEnabled(false);
+        zoominAction = new JMenuItem("Zoom in");
+        zoominAction.setEnabled(false);
+        zoomoutAction = new JMenuItem("Zoom out");
+        zoomoutAction.setEnabled(false);
+        equalizeAction = new JMenuItem("Equalize");
+        equalizeAction.setEnabled(false);
+        makeGSAction = new JMenuItem("Grayscale");
+        makeGSAction.setEnabled(false);
+        makeRGBAction = new JMenuItem("Color...");
+        makeRGBAction.setEnabled(false);
+        houghAction = new JMenuItem("Hough Transform...");
+        houghAction.setEnabled(false);
+        blendAction = new JMenuItem("Blend with...");
+        blendAction.setEnabled(false);
+        sharpenAction = new JMenuItem("Sharpen...");
+        sharpenAction.setEnabled(false);
         
         //Help menu
-        JMenuItem helpAboutAction = new JMenuItem("About...");
+         helpAboutAction = new JMenuItem("About...");
         
         //File Actions 
         fileMenu.add(openAction);
         fileMenu.add(saveAction);
         fileMenu.add(saveAsMenu);
-        saveAsMenu.add(saveasGSAction);
-        saveAsMenu.add(saveasRGBAction);
         fileMenu.add(recentAction);
         fileMenu.add(newMosaicAction);
         fileMenu.add(closeAction);
@@ -117,6 +135,8 @@ public class High5IPS extends JFrame {
         editMenu.add(zoomoutAction);
         editMenu.addSeparator();
         editMenu.add(equalizeAction);
+        editMenu.add(makeGSAction);
+        editMenu.add(makeRGBAction);
         editMenu.add(houghAction);
         editMenu.add(sharpenAction);
         editMenu.add(blendAction);
@@ -128,13 +148,6 @@ public class High5IPS extends JFrame {
         openAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	openFile();
-            }
-        });
-        
-        // Save as RGB method
-        saveasRGBAction.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-            	JOptionPane.showMessageDialog(null, "Color Picker will be here");                
             }
         });
         
@@ -152,7 +165,7 @@ public class High5IPS extends JFrame {
             }
         });
         
-     // New Mosaic method
+     // File|Close method
         closeAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	closeFile();                
@@ -170,6 +183,42 @@ public class High5IPS extends JFrame {
         exitAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	System.exit(0);                
+            }
+        });
+        
+        // Edit|Equalize method
+        equalizeAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	equalize();                
+            }
+        });
+        
+        // Make Grayscale method
+        makeGSAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	//put right panel image onto stack
+            	if(rPanel.img != null)
+            		undoStack.push(rPanel.img);
+            	
+            	//copy left panel to the right side
+            	rPanel.img = lPanel.img;
+            	
+            	BufferedImage gsImg = new BufferedImage(lPanel.img.getWidth(),lPanel.img.getHeight(),BufferedImage.TYPE_BYTE_GRAY);
+            	Graphics g = gsImg.getGraphics();
+            	g.drawImage(lPanel.img, 0, 0, null);  
+            	g.dispose();
+            	lPanel.img = gsImg;
+            	rPanel.repaint();
+            	lPanel.repaint();
+            }
+        });
+        
+        
+        
+     // Make RGB method
+        makeRGBAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	JOptionPane.showMessageDialog(null, "Color Picker will be here");                
             }
         });
         
@@ -203,7 +252,33 @@ public class High5IPS extends JFrame {
         
  }
 
-    /**
+    protected static void equalize() {
+		Equalizer eq = new Equalizer();
+		
+		
+	}
+    
+    //menuitems exposed so they can be dis/enabled
+    protected JMenuItem openAction;
+    protected JMenuItem saveAction;
+    protected JMenuItem recentAction;
+    protected JMenuItem newMosaicAction;
+    protected JMenuItem closeAction;
+    protected JMenuItem propertiesAction;
+    protected JMenuItem exitAction;
+    protected JMenuItem undoAction;
+    protected JMenuItem redoAction;
+    protected JMenuItem zoominAction;
+    protected JMenuItem zoomoutAction;
+    protected JMenuItem equalizeAction;
+    protected static JMenuItem makeGSAction;
+    protected JMenuItem makeRGBAction;
+    protected JMenuItem houghAction;
+    protected JMenuItem blendAction;
+    protected JMenuItem sharpenAction;
+    protected JMenuItem helpAboutAction;   
+    
+	/**
      *One-sentence description ending with a period - one and only one period in description.
 		 *Additional description information - as many lines as needed HTML tags OK
 		 *@author Team High Five
@@ -247,7 +322,7 @@ public class High5IPS extends JFrame {
 	 *@param parameterName parameter description
 	 *@return return description
 	 */
-    protected BufferedImage[] UndoStack;
+    private Stack<BufferedImage> undoStack;
     
     protected static IPSImagePanel lPanel ;
     
@@ -273,23 +348,16 @@ public class High5IPS extends JFrame {
 	       
     		try{
     			lPanel.img = ImageIO.read(new File(currentImageFilePath));
+    			rPanel.img = null;
     		}catch(IOException e){
     			//TODO
     		}
     		
-	        this.repaint();
+    		//enable edting menus
+    		makeGSAction.setEnabled(true);
 	        
-    		/*currentImage = Toolkit.getDefaultToolkit().getImage(currentImageFilePath);
-    		MediaTracker md = new MediaTracker(this);
-    		md.addImage(currentImage, 1);
-    		try{
-    			md.waitForAll();
-    		}catch(Exception e){
-    			
-    		}*/
-    		
-    		//lImg.removeAll();
-    		//lImg.setIcon(new ImageIcon(currentImage));
+    		this.repaint();
+	           		
     	}
     }
 
@@ -336,6 +404,7 @@ public class High5IPS extends JFrame {
         lPanel.img = null;
         rPanel.repaint();
         lPanel.repaint();
+        makeGSAction.setEnabled(false);
     }
 
     /**

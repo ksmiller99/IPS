@@ -1,9 +1,13 @@
 package ips.high5.cmpt594;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageFilter;
+
 /**
  *The description
  *of the class
  */
-public class  Equalizer {
+public class  Equalizer extends ImageFilter{
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +22,7 @@ public class  Equalizer {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public Equalizer() {
+    public Equalizer(){
     }
 
 
@@ -26,7 +30,10 @@ public class  Equalizer {
      * @param img 
      * @return
      */
-    public void equalize(IpsGrayscaleImage img) {
+    public BufferedImage equalize(BufferedImage img) {
+		
+    	
+    	return img;
         // TODO implement here
         
     }
