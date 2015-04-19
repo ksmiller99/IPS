@@ -5,18 +5,39 @@ package ips.high5.cmpt594;
  *their own images and edit it them by adding different effects to the images. 
  *@author Team High Five
  */
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageFilter;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 @SuppressWarnings("serial")
 public class High5IPS extends JFrame {
@@ -34,7 +55,7 @@ public class High5IPS extends JFrame {
 		 */
     public High5IPS(){
         setTitle("High 5 Image Processing System");
-        setSize(640, 480);
+        //setSize(640, 480);
         
         // Creates a menubar for a JFrame
         JMenuBar  menuBar = new JMenuBar();
@@ -106,7 +127,7 @@ public class High5IPS extends JFrame {
         // Open method
         openAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-            	JOptionPane.showMessageDialog(null, "You have clicked on the Open action");
+            	openFile();
             }
         });
         
@@ -173,7 +194,7 @@ public class High5IPS extends JFrame {
             }
         });
         
-}
+ }
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -188,7 +209,7 @@ public class High5IPS extends JFrame {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    protected IpsImage currentImage;
+    protected BufferedImage currentImage;
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -219,13 +240,50 @@ public class High5IPS extends JFrame {
 	 *@param parameterName parameter description
 	 *@return return description
 	 */
-    public UndoStack contains;
-
+    protected BufferedImage[] UndoStack;
+    
+    protected static IPSImagePanel lPanel ;
+    
+    protected static IPSImagePanel rPanel;
+    
     /**
      * @return If successful, places path in current path and create currentImage
      */
-    protected void openFile() {
-        // TODO implement here
+    protected void openFile(){
+    	//Create a file chooser
+    	
+    	final JFileChooser fc = new JFileChooser();
+    	 
+    	fc.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
+    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fc.setAcceptAllFileFilterUsed(false);
+        
+        //In response to a button click:
+    	int returnVal = fc.showOpenDialog(this);
+    	if (returnVal == JFileChooser.APPROVE_OPTION){
+    		currentImageFilePath = fc.getSelectedFile().getPath();
+    		System.out.println("You chose to open this file: " + currentImageFilePath);
+	       
+    		try{
+    			lPanel.img = ImageIO.read(new File(currentImageFilePath));
+    		}catch(IOException e){
+    			//TODO
+    		}
+    		
+	        this.repaint();
+	        
+    		/*currentImage = Toolkit.getDefaultToolkit().getImage(currentImageFilePath);
+    		MediaTracker md = new MediaTracker(this);
+    		md.addImage(currentImage, 1);
+    		try{
+    			md.waitForAll();
+    		}catch(Exception e){
+    			
+    		}*/
+    		
+    		//lImg.removeAll();
+    		//lImg.setIcon(new ImageIcon(currentImage));
+    	}
     }
 
     /**
@@ -278,10 +336,33 @@ public class High5IPS extends JFrame {
     }
     
 	public static void main(String[] args) {
-		
+	    try {
+	        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+	    } catch (Exception evt) {}
+
 		High5IPS me = new High5IPS();
         me.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        //set fullscreen
         me.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        
+        //set grid layout 1 row, 2 columns
+        me.setLayout(new GridLayout(1,2));
+        
+        //create left and right panels for holding images
+        lPanel = new IPSImagePanel();
+        lPanel.setPreferredSize(new Dimension (400,600));
+        lPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        lPanel.setLayout(new GridBagLayout());
+        
+        rPanel = new IPSImagePanel();
+        rPanel.setPreferredSize(new Dimension (400,600));
+        rPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        rPanel.setLayout(new GridBagLayout());
+
+		me.getContentPane().add(lPanel);
+		me.getContentPane().add(rPanel);
+
         me.setVisible(true);
 	}
 
