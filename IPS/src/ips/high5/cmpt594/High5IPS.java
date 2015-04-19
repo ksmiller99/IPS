@@ -145,10 +145,17 @@ public class High5IPS extends JFrame {
             }
         });
         
-        // New Mosaic method
+     // New Mosaic method
         newMosaicAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	JOptionPane.showMessageDialog(null, "Multi File Picker will be here");                
+            }
+        });
+        
+     // New Mosaic method
+        closeAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	closeFile();                
             }
         });
         
@@ -324,8 +331,11 @@ public class High5IPS extends JFrame {
     /**
      * @return
      */
-    protected void closeFile() {
-        // TODO implement here
+    protected static  void closeFile() {
+        rPanel.img = null;
+        lPanel.img = null;
+        rPanel.repaint();
+        lPanel.repaint();
     }
 
     /**
