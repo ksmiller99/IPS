@@ -276,7 +276,7 @@ public class High5IPS extends JFrame {
     protected static JMenuItem makeGSAction;
     protected JMenuItem makeRGBAction;
     protected JMenuItem houghAction;
-    protected JMenuItem blendAction;
+    protected static JMenuItem blendAction;
     protected JMenuItem sharpenAction;
     protected JMenuItem helpAboutAction;   
     
