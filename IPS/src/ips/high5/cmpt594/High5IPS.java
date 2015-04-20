@@ -347,13 +347,7 @@ public class High5IPS extends JFrame {
     		
     		//enable edting menus
     		makeGSAction.setEnabled(true);
-    		/*
-    		if (lPanel.img.getType() == BufferedImage.TYPE_BYTE_GRAY)
-    			equalizeAction.setEnabled(true);
-    		else
-    			equalizeAction.setEnabled(false);
-	        closeAction.setEnabled(true);
-	        */
+    		equalizeAction.setEnabled(true);
     		this.repaint();
 	           		
     	}
