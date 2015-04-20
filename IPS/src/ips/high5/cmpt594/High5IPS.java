@@ -178,7 +178,7 @@ public class High5IPS extends JFrame {
             	equalize();                
             }
         });
-        
+  /* cici */      
         // Make Grayscale method
         makeGSAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
