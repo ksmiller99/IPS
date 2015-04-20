@@ -78,40 +78,24 @@ public class High5IPS extends JFrame {
         // File Menu
         openAction = new JMenuItem("Open");
         saveAction = new JMenuItem("Save");
-        saveAction.setEnabled(false);
-        JMenu saveAsMenu = new JMenu("Save as...");
-        saveAsMenu.setEnabled(false);
+        saveAsAction = new JMenuItem("Save as...");
         recentAction = new JMenuItem("Recent...");
-        recentAction.setEnabled(false);
         newMosaicAction = new JMenuItem("New Mosaic...");
-        newMosaicAction.setEnabled(false);
         closeAction = new JMenuItem("Close");
-        closeAction.setEnabled(false);
         propertiesAction = new JMenuItem("Properties...");
-        propertiesAction.setEnabled(false);
         exitAction = new JMenuItem("Exit");
         
         //Edit menu
         undoAction = new JMenuItem("Undo");
-        undoAction.setEnabled(false);
         redoAction = new JMenuItem("Redo");
-        redoAction.setEnabled(false);
         zoominAction = new JMenuItem("Zoom in");
-        zoominAction.setEnabled(false);
         zoomoutAction = new JMenuItem("Zoom out");
-        zoomoutAction.setEnabled(false);
         equalizeAction = new JMenuItem("Equalize");
-        equalizeAction.setEnabled(false);
         makeGSAction = new JMenuItem("Grayscale");
-        makeGSAction.setEnabled(false);
         makeRGBAction = new JMenuItem("Color...");
-        makeRGBAction.setEnabled(false);
         houghAction = new JMenuItem("Hough Transform...");
-        houghAction.setEnabled(false);
         blendAction = new JMenuItem("Blend with...");
-        blendAction.setEnabled(false);
         sharpenAction = new JMenuItem("Sharpen...");
-        sharpenAction.setEnabled(false);
         
         //Help menu
          helpAboutAction = new JMenuItem("About...");
@@ -119,7 +103,7 @@ public class High5IPS extends JFrame {
         //File Actions 
         fileMenu.add(openAction);
         fileMenu.add(saveAction);
-        fileMenu.add(saveAsMenu);
+        fileMenu.add(saveAsAction);
         fileMenu.add(recentAction);
         fileMenu.add(newMosaicAction);
         fileMenu.add(closeAction);
@@ -143,6 +127,8 @@ public class High5IPS extends JFrame {
         
         //Help Actions
         helpMenu.add(helpAboutAction);
+        
+        initializeMenuVisibility();
                
         // Open method
         openAction.addActionListener(new ActionListener() {
@@ -219,7 +205,6 @@ public class High5IPS extends JFrame {
         makeRGBAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	JOptionPane.showMessageDialog(null, "Color Picker will be here");                
-           
             }
         });
         
@@ -240,8 +225,7 @@ public class High5IPS extends JFrame {
         // Blend method
         blendAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-            	//JOptionPane.showMessageDialog(null, "Single File Picker will be here.");
-            	blendWith();
+            	JOptionPane.showMessageDialog(null, "Single File Picker will be here.");                
             }
         });
         
@@ -255,30 +239,36 @@ public class High5IPS extends JFrame {
  }
 
     protected static void equalize() {
-		Equalizer eq = new Equalizer();
-		
-		
+		IpsEqualizer eq = new IpsEqualizer();
+		//BufferedImage eqImg = eq.equalize(lPanel.img);
+		BufferedImage eqImg= eq.histogramEqualize(lPanel.img);
+		undoStack.push(rPanel.img);
+		rPanel.img = lPanel.img;
+		lPanel.img = eqImg;
+		rPanel.repaint();
+		lPanel.repaint();
 	}
     
     //menuitems exposed so they can be dis/enabled
-    protected JMenuItem openAction;
-    protected JMenuItem saveAction;
-    protected JMenuItem recentAction;
-    protected JMenuItem newMosaicAction;
-    protected JMenuItem closeAction;
-    protected JMenuItem propertiesAction;
-    protected JMenuItem exitAction;
-    protected JMenuItem undoAction;
-    protected JMenuItem redoAction;
-    protected JMenuItem zoominAction;
-    protected JMenuItem zoomoutAction;
-    protected JMenuItem equalizeAction;
+    protected static JMenuItem openAction;
+    protected static JMenuItem saveAction;
+    protected static JMenuItem saveAsAction;
+    protected static JMenuItem recentAction;
+    protected static JMenuItem newMosaicAction;
+    protected static JMenuItem closeAction;
+    protected static JMenuItem propertiesAction;
+    protected static JMenuItem exitAction;
+    protected static JMenuItem undoAction;
+    protected static JMenuItem redoAction;
+    protected static JMenuItem zoominAction;
+    protected static JMenuItem zoomoutAction;
+    protected static JMenuItem equalizeAction;
     protected static JMenuItem makeGSAction;
-    protected JMenuItem makeRGBAction;
-    protected JMenuItem houghAction;
+    protected static JMenuItem makeRGBAction;
+    protected static JMenuItem houghAction;
     protected static JMenuItem blendAction;
-    protected JMenuItem sharpenAction;
-    protected JMenuItem helpAboutAction;   
+    protected static JMenuItem sharpenAction;
+    protected static JMenuItem helpAboutAction;   
     
 	/**
      *One-sentence description ending with a period - one and only one period in description.
@@ -324,7 +314,7 @@ public class High5IPS extends JFrame {
 	 *@param parameterName parameter description
 	 *@return return description
 	 */
-    private Stack<BufferedImage> undoStack;
+    private static Stack<BufferedImage> undoStack;
     
     protected static IPSImagePanel lPanel ;
     
@@ -357,11 +347,37 @@ public class High5IPS extends JFrame {
     		
     		//enable edting menus
     		makeGSAction.setEnabled(true);
-    		blendAction.setEnabled(true);
-    		
+    		/*
+    		if (lPanel.img.getType() == BufferedImage.TYPE_BYTE_GRAY)
+    			equalizeAction.setEnabled(true);
+    		else
+    			equalizeAction.setEnabled(false);
+	        closeAction.setEnabled(true);
+	        */
     		this.repaint();
 	           		
     	}
+    }
+    
+    /**
+     * Initializes menu item visibility, called at start and file|close
+     */
+    private static void initializeMenuVisibility(){
+        closeAction.setEnabled(false);
+        saveAction.setEnabled(false);
+        saveAsAction.setEnabled(false);
+        propertiesAction.setEnabled(false);
+        undoAction.setEnabled(false);
+        redoAction.setEnabled(false);
+        zoominAction.setEnabled(false);
+        zoomoutAction.setEnabled(false);
+        //equalizeAction.setEnabled(false);
+        makeGSAction.setEnabled(false);
+        makeRGBAction.setEnabled(false);
+        newMosaicAction.setEnabled(false);
+        houghAction.setEnabled(false);
+        blendAction.setEnabled(false);
+        sharpenAction.setEnabled(false);
     }
 
     /**
@@ -407,8 +423,7 @@ public class High5IPS extends JFrame {
         lPanel.img = null;
         rPanel.repaint();
         lPanel.repaint();
-        makeGSAction.setEnabled(false);
-        blendAction.setEnabled(false);
+        initializeMenuVisibility();
     }
 
     /**
@@ -417,36 +432,6 @@ public class High5IPS extends JFrame {
     protected void exitApplication() {
         // TODO implement here
     }
-    
-    protected void blendWith(){
-    	//Create a file chooser
-    	
-    	final JFileChooser fc = new JFileChooser();
-    	 
-    	fc.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
-    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fc.setAcceptAllFileFilterUsed(false);
-        
-        //In response to a button click:
-    	int returnVal = fc.showOpenDialog(this);
-    	if (returnVal == JFileChooser.APPROVE_OPTION){
-    		currentImageFilePath = fc.getSelectedFile().getPath();
-    		System.out.println("You chose to open this file: " + currentImageFilePath);
-	       
-    		try{
-    			rPanel.img = lPanel.img;
-    			lPanel.img = ImageIO.read(new File(currentImageFilePath));
-    		}catch(IOException e){
-    			//TODO
-    		}
-    		
-    		//enable edting menus
-    		
-    		
-    		this.repaint();           		
-    	}
-    }
-    
     
 	public static void main(String[] args) {
 	    try {
