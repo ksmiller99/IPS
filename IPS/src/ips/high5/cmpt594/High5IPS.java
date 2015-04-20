@@ -371,7 +371,7 @@ public class High5IPS extends JFrame {
         redoAction.setEnabled(false);
         zoominAction.setEnabled(false);
         zoomoutAction.setEnabled(false);
-        //equalizeAction.setEnabled(false);
+        equalizeAction.setEnabled(false);
         makeGSAction.setEnabled(false);
         makeRGBAction.setEnabled(false);
         newMosaicAction.setEnabled(false);
