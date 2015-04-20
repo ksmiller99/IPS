@@ -67,7 +67,31 @@ package ips.high5.cmpt594;
     private float opacity;
 
 
-    /**
+    public IpsImage getTopImage() {
+			return topImage;
+		}
+
+		public void setTopImage(IpsImage topImage) {
+			this.topImage = topImage;
+		}
+
+		public IpsImage getBottomImage() {
+			return bottomImage;
+		}
+
+		public void setBottomImage(IpsImage bottomImage) {
+			this.bottomImage = bottomImage;
+		}
+
+		public float getOpacity() {
+			return opacity;
+		}
+
+		public void setOpacity(float opacity) {
+			this.opacity = opacity;
+		}
+
+	/**
      * @return
      */
     public void imageExchage() {
