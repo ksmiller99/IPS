@@ -75,9 +75,10 @@ import java.awt.image.BufferedImage;
      */
     public void imageExchage() {
         // TODO implement here
-    	BufferedImage temp=topImage;
+     	BufferedImage temp;
+    	temp=topImage;
     	topImage=bottomImage;
-    	bottomImage=topImage;
+    	bottomImage=temp;    
         
     }
 
@@ -86,7 +87,10 @@ import java.awt.image.BufferedImage;
      */
     public void linearBlend() {
         // TODO implement here
-        
+    	 int[] top=new int[topImage.getWidth()*topImage.getHeight()];
+         int[] bottom=new int[bottomImage.getWidth()*bottomImage.getHeight()];
+         int[] temp=new int[topImage.getWidth()*topImage.getHeight()];
+         top=topImage.getData().getPixels(0, 0, topImage.getWidth(), bottomImage.getHeight(), temp);
     }
 
     /**
