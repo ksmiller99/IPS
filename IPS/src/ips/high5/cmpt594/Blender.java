@@ -1,4 +1,7 @@
 package ips.high5.cmpt594;
+
+import java.awt.image.BufferedImage;
+
 /**
  *The description
  *of the class
@@ -34,7 +37,7 @@ package ips.high5.cmpt594;
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    private IpsImage topImage;
+    private BufferedImage topImage;
 
         /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -49,7 +52,7 @@ package ips.high5.cmpt594;
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    private IpsImage bottomImage;
+    private BufferedImage bottomImage;
 
         /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -72,7 +75,7 @@ package ips.high5.cmpt594;
      */
     public void imageExchage() {
         // TODO implement here
-    	IpsImage temp=topImage;
+    	BufferedImage temp=topImage;
     	topImage=bottomImage;
     	bottomImage=topImage;
         

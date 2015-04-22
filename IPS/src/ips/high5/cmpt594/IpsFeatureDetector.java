@@ -3,7 +3,7 @@ package ips.high5.cmpt594;
  *The description
  *of the class
  */
-public class  IpsMenuItem {
+public class  IpsFeatureDetector {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +18,7 @@ public class  IpsMenuItem {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsMenuItem() {
+    public IpsFeatureDetector() {
     }
 
         /**
@@ -34,18 +34,21 @@ public class  IpsMenuItem {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    private String itemText;
-
-
-
-
+    public IpsBinaryImage featuresImage;
 
 
     /**
-     * @param IpsActionListener 
      * @return
      */
-    public void addIpsActionListener(IpsActionListener ial) {
+    public void detectEdges() {
+        // TODO implement here
+        
+    }
+
+    /**
+     * @return
+     */
+    public void detectLines() {
         // TODO implement here
         
     }

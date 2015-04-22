@@ -3,7 +3,7 @@ package ips.high5.cmpt594;
  *The description
  *of the class
  */
-public class  IpsMenuItem2 {
+public class  IpsSharpener {
 
     /**
      *One-sentence description ending with a period - one and only one period in description.
@@ -18,7 +18,7 @@ public class  IpsMenuItem2 {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    public IpsMenuItem2() {
+    public IpsSharpener() {
     }
 
         /**
@@ -34,18 +34,13 @@ public class  IpsMenuItem2 {
 		 *@param parameterName parameter description
 		 *@return return description
 		 */
-    private String itemText;
-
-
-
-
+    private int sharpenLevel;
 
 
     /**
-     * @param IpsActionListener 
      * @return
      */
-    public void addIpsActionListener(IpsActionListener ial) {
+    public void sharpen() {
         // TODO implement here
         
     }
