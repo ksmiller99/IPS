@@ -225,7 +225,8 @@ public class High5IPS extends JFrame {
         // Blend method
         blendAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-            	JOptionPane.showMessageDialog(null, "Single File Picker will be here.");                
+            	//JOptionPane.showMessageDialog(null, "Single File Picker will be here.");                
+            	blendWith();
             }
         });
         
@@ -347,15 +348,39 @@ public class High5IPS extends JFrame {
     		
     		//enable edting menus
     		makeGSAction.setEnabled(true);
-    		/*
-    		if (lPanel.img.getType() == BufferedImage.TYPE_BYTE_GRAY)
-    			equalizeAction.setEnabled(true);
-    		else
-    			equalizeAction.setEnabled(false);
-	        closeAction.setEnabled(true);
-	        */
+    		equalizeAction.setEnabled(true);
+    		blendAction.setEnabled(true);
     		this.repaint();
 	           		
+    	}
+    }
+    
+    protected void blendWith(){
+    	//Open a second image to blend
+    	
+    	final JFileChooser fc = new JFileChooser();
+    	 
+    	fc.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
+    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fc.setAcceptAllFileFilterUsed(false);
+        
+        //In response to a button click:
+    	int returnVal = fc.showOpenDialog(this);
+    	if (returnVal == JFileChooser.APPROVE_OPTION){
+    		currentImageFilePath = fc.getSelectedFile().getPath();
+    		System.out.println("You chose to open this file: " + currentImageFilePath);
+	       
+    		try{
+    			rPanel.img = lPanel.img;
+    			lPanel.img = ImageIO.read(new File(currentImageFilePath));
+    		}catch(IOException e){
+    			//TODO
+    		}
+    		
+    		//enable edting menus
+    		
+    		
+    		this.repaint();           		
     	}
     }
     

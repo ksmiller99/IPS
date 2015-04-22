@@ -72,6 +72,9 @@ package ips.high5.cmpt594;
      */
     public void imageExchage() {
         // TODO implement here
+    	IpsImage temp=topImage;
+    	topImage=bottomImage;
+    	bottomImage=topImage;
         
     }
 
