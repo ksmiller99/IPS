@@ -60,6 +60,7 @@ public class High5IPS extends JFrame {
         
         //initialize 
         undoStack = new Stack();
+        redoStack = new Stack();
         
         // Creates a menubar for a JFrame
         JMenuBar  menuBar = new JMenuBar();
@@ -137,21 +138,53 @@ public class High5IPS extends JFrame {
             }
         });
         
-        // Recent method
+     // Undo method
+        undoAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	redoStack.push(lPanel.img);
+            	redoAction.setEnabled(true);
+            	lPanel.img = rPanel.img;
+            	if(undoStack.isEmpty()){
+            		rPanel.img = null;
+            		undoAction.setEnabled(false);
+            	}
+            	else
+            		rPanel.img = undoStack.pop();
+            	lPanel.repaint();
+            	rPanel.repaint();
+            }
+        });
+        
+     // Redo method
+        redoAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	if(rPanel.img != null)
+            		undoStack.push(rPanel.img);
+            	rPanel.img = lPanel.img;
+            	undoAction.setEnabled(true);
+            	lPanel.img = redoStack.pop();
+            	if(redoStack.isEmpty())
+            		redoAction.setEnabled(false);
+            	lPanel.repaint();
+            	rPanel.repaint();
+            }
+        });
+        
+     // Recent method
         recentAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	JOptionPane.showMessageDialog(null, "Recent file list will be here.");                
             }
         });
         
-     // New Mosaic method
+        // New Mosaic method
         newMosaicAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	JOptionPane.showMessageDialog(null, "Multi File Picker will be here");                
             }
         });
         
-     // File|Close method
+        // File|Close method
         closeAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	closeFile();                
@@ -185,6 +218,7 @@ public class High5IPS extends JFrame {
             	//put right panel image onto stack
             	if(rPanel.img != null)
             		undoStack.push(rPanel.img);
+            	undoAction.setEnabled(true);
             	
             	//copy left panel to the right side
             	rPanel.img = lPanel.img;
@@ -243,8 +277,10 @@ public class High5IPS extends JFrame {
 		IpsEqualizer eq = new IpsEqualizer();
 		//BufferedImage eqImg = eq.equalize(lPanel.img);
 		BufferedImage eqImg= eq.histogramEqualize(lPanel.img);
-		undoStack.push(rPanel.img);
-		rPanel.img = lPanel.img;
+		if(rPanel.img != null)
+    		undoStack.push(rPanel.img);
+    	undoAction.setEnabled(true);
+    	rPanel.img = lPanel.img;
 		lPanel.img = eqImg;
 		rPanel.repaint();
 		lPanel.repaint();
@@ -317,9 +353,11 @@ public class High5IPS extends JFrame {
 	 */
     private static Stack<BufferedImage> undoStack;
     
-    protected static IPSImagePanel lPanel ;
+    private static Stack<BufferedImage> redoStack;
     
-    protected static IPSImagePanel rPanel;
+    protected static IpsImagePanel lPanel ;
+    
+    protected static IpsImagePanel rPanel;
     
     /**
      * @return If successful, places path in current path and create currentImage
@@ -350,6 +388,7 @@ public class High5IPS extends JFrame {
     		makeGSAction.setEnabled(true);
     		equalizeAction.setEnabled(true);
     		blendAction.setEnabled(true);
+    		closeAction.setEnabled(true);
     		this.repaint();
 	           		
     	}
@@ -473,12 +512,12 @@ public class High5IPS extends JFrame {
         me.setLayout(new GridLayout(1,2));
         
         //create left and right panels for holding images
-        lPanel = new IPSImagePanel();
+        lPanel = new IpsImagePanel();
         lPanel.setPreferredSize(new Dimension (400,600));
         lPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         lPanel.setLayout(new GridBagLayout());
         
-        rPanel = new IPSImagePanel();
+        rPanel = new IpsImagePanel();
         rPanel.setPreferredSize(new Dimension (400,600));
         rPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         rPanel.setLayout(new GridBagLayout());
