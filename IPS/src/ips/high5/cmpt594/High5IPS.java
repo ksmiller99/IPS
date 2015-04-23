@@ -27,6 +27,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -38,6 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -271,7 +273,43 @@ public class High5IPS extends JFrame {
             }
         });
         
- }
+        JButton topLeftAligned=new JButton("Top Left Aligned");
+        JButton btmLeftAligned=new JButton("Bottom Left Aligned");
+        JButton topRightAligned=new JButton("Top Right Aligned");
+        JButton btmRightAligned=new JButton("Bottom Right Aligned");
+        JButton centerAligned=new JButton("Center");
+        
+        blendToolBar = new JToolBar("Blend Tool Kit");
+        blendToolBar.addSeparator();
+        blendToolBar.setFloatable(true);  
+        blendToolBar.add(topLeftAligned);
+        blendToolBar.add(btmLeftAligned);
+        blendToolBar.add(topRightAligned);
+        blendToolBar.add(btmRightAligned);
+        blendToolBar.add(centerAligned);
+       
+        topLeftAligned.setToolTipText("Top Left Aligned");
+        btmLeftAligned.setToolTipText("Bottom Left Aligned");
+        topRightAligned.setToolTipText("Top Right Aligned");
+        btmRightAligned.setToolTipText("Bottom Right Aligned");
+        
+        topLeftAligned.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+       
+      //  JMenuBar blendMenuBar=new JMenuBar();
+      //  setJMenuBar(blendMenuBar,);
+        //JPanel p=new JPanel();
+       menuBar.add(blendToolBar, BorderLayout.NORTH);
+        
+        blendToolBar.setVisible(false);
+       // blendToolBar.setEnabled(false);
+    }
 
     protected static void equalize() {
 		IpsEqualizer eq = new IpsEqualizer();
@@ -307,6 +345,7 @@ public class High5IPS extends JFrame {
     protected static JMenuItem sharpenAction;
     protected static JMenuItem helpAboutAction;   
     
+    protected static JToolBar blendToolBar;
 	/**
      *One-sentence description ending with a period - one and only one period in description.
 		 *Additional description information - as many lines as needed HTML tags OK
@@ -415,11 +454,11 @@ public class High5IPS extends JFrame {
     		}catch(IOException e){
     			//TODO
     		}
-    		
-    		//enable edting menus
-    		
-    		
-    		this.repaint();           		
+  
+    		//enable edting menus   		
+    		this.repaint();
+    		blendToolBar.setVisible(true);
+    	
     	}
     }
     
@@ -496,6 +535,8 @@ public class High5IPS extends JFrame {
     protected void exitApplication() {
         // TODO implement here
     }
+    //CC 
+   
     
 	public static void main(String[] args) {
 	    try {
