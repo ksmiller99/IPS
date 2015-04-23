@@ -76,16 +76,24 @@ import java.awt.image.ColorModel;
     public static final int MULTIPLY_BLEND=3;
     public static final int SCREEN_BLEND=4;
     public static final int OVERLAY_BLEND=5;
+    
+    public static final int LEFT_TOP=1;
+    public static final int LEFT_BOTTOM=2;
+    public static final int RIGHT_TOP=3;
+    public static final int RIGHT_BOTTOM=4;
+    public static final int CENTER=5;
 
     private int mode;
+    private int aligned;
     
     public Blender(BufferedImage topImage, BufferedImage bottomImage,
-			float opacity, int mode) {
+			float opacity, int mode, int aligned) {
 		super();
 		this.topImage = topImage;
 		this.bottomImage = bottomImage;
 		this.opacity = opacity;
 		this.mode = mode;
+		this.aligned=aligned;
 	}
     
     
@@ -126,6 +134,16 @@ import java.awt.image.ColorModel;
 
 	public void setMode(int mode) {
 		this.mode = mode;
+	}
+
+
+	public int getAligned() {
+		return aligned;
+	}
+
+
+	public void setAligned(int aligned) {
+		this.aligned = aligned;
 	}
 
 
@@ -219,33 +237,154 @@ import java.awt.image.ColorModel;
     	}
     	return rgb;
     }
+    public int getMinInt(int x, int y)
+    {
+    	if (x<=y) return x;
+    	else return y;
+    }
+    
+    public void getStarEnd(int[] top, int[] bottom)
+    {
+    	//index 0,1: startX, startY
+    	//index 2,3: endX, endY
+    	//scanwidth= index 2- index 0
+    	//top=new int[4];
+    	//bottom=new int[4];
+    	
+    	if(aligned==LEFT_TOP)
+    	{
+    		top[0]=bottom[0]=0;
+			top[1]=bottom[1]=0;
+    		top[2]=bottom[2]=getMinInt(topImage.getWidth(),bottomImage.getWidth());
+    		top[3]=bottom[3]=getMinInt(topImage.getHeight(),bottomImage.getHeight());
+    	}
+    	else if (aligned==LEFT_BOTTOM)
+    	{
+    		top[0]=bottom[0]=0;
+    		top[2]=bottom[2]=getMinInt(topImage.getWidth(),bottomImage.getWidth());
+    		top[3]=topImage.getHeight();
+    		bottom[3]=bottomImage.getHeight();
+    		if(topImage.getHeight()<=bottomImage.getHeight())
+    		{	
+    			top[1]=0;
+    			bottom[1]=bottomImage.getHeight()-topImage.getHeight();
+    		}
+    		else
+    		{
+    			top[1]=topImage.getHeight()-bottomImage.getHeight();
+    			bottom[1]=0;   			
+    		}
+    	}
+    	else if(aligned==RIGHT_TOP)
+    	{
+    		top[1]=bottom[1]=0;
+    		top[3]=bottom[3]=getMinInt(topImage.getHeight(),bottomImage.getHeight());
+    		top[2]=topImage.getWidth();
+    		bottom[2]=bottomImage.getWidth();
+    		if(topImage.getWidth()<=bottomImage.getWidth())
+    		{
+    			top[0]=0;
+    			bottom[0]=bottomImage.getWidth()-topImage.getWidth();
+    		}
+    		else
+    		{
+    			top[0]=topImage.getWidth()-bottomImage.getWidth();
+    			bottom[0]=0;
+    		}
+    	}
+    	else if (aligned==RIGHT_BOTTOM)
+    	{
+    		top[2]=topImage.getWidth();
+    		top[3]=topImage.getHeight();
+    		bottom[2]=bottomImage.getWidth();
+    		bottom[3]=bottomImage.getHeight();
+    		if(topImage.getWidth()<=bottomImage.getWidth())
+    		{
+    			top[0]=0;
+    			bottom[0]=bottomImage.getWidth()-topImage.getWidth();
+    		}
+    		else
+    		{
+    			top[0]=topImage.getWidth()-bottomImage.getWidth();
+    			bottom[0]=0;
+    		}
+    		if(topImage.getHeight()<=bottomImage.getHeight())
+    		{
+    			top[1]=0;
+    			bottom[1]=bottomImage.getHeight()-bottomImage.getHeight();
+    		}
+    		else
+    		{
+    			top[1]=topImage.getHeight()-bottomImage.getHeight();
+    			bottom[1]=0;
+    		}	
+    	}
+    	else if (aligned==CENTER)
+    	{
+    		if(topImage.getWidth()<=bottomImage.getWidth())
+    		{
+    			top[0]=0;
+    			bottom[0]=(bottomImage.getWidth()-topImage.getWidth())/2;
+    			top[2]=topImage.getWidth();
+    			bottom[2]=bottomImage.getWidth()-(bottomImage.getWidth()-topImage.getWidth())/2;
+    		}
+    		else
+    		{
+    			bottom[0]=0;
+    			top[0]=(topImage.getWidth()-bottomImage.getWidth())/2;
+    			bottom[2]=bottomImage.getWidth();
+    			top[2]=topImage.getWidth()-(topImage.getWidth()-bottomImage.getWidth())/2;
+    		}
+    		
+    		if(topImage.getHeight()<=bottomImage.getHeight())
+    		{
+    			top[1]=0;
+    			bottom[1]=(bottomImage.getHeight()-topImage.getHeight())/2;
+    			top[3]=topImage.getHeight();
+    			bottom[3]=bottomImage.getHeight()-(bottomImage.getHeight()-topImage.getHeight())/2;
+    		}
+    		else
+    		{
+    			bottom[1]=0;
+    			top[1]=(topImage.getHeight()-bottomImage.getHeight())/2;
+    			bottom[3]=bottomImage.getHeight();
+    			top[3]=topImage.getHeight()-(topImage.getHeight()-bottomImage.getHeight())/2;
+    		}
+    		
+    	}
+    	
+    }
+    
     public BufferedImage blend(BufferedImage dest){
         // TODO implement here
-    	int width=topImage.getWidth();
-    	int height=topImage.getHeight();
+    	
+    	int[] topXY=new int[4];
+    	int[] bottomXY=new int[4];
+    	getStarEnd(topXY, bottomXY);
+    	int width=topXY[3]-topXY[1];
+    	int height=topXY[2]-topXY[0];
     //	BufferedImage dest;
     	if(dest==null)     	
-    		dest=createCompatibleDestImage(topImage, null);
-    	
-    	 int[] top=new int[width*height];
-         int[] bottom=new int[bottomImage.getWidth()*bottomImage.getHeight()];
+    		dest=createCompatibleDestImage(topImage, null);  	
+    	 int[] topPixels=new int[width*height];
+         int[] bottomPixels=new int[width*height];
          int[] outPixels=new int[width*height];
-         topImage.getRGB(0,0,width,height,top,0,width);
-         bottomImage.getRGB(0,0,bottomImage.getWidth(),bottomImage.getHeight(),bottom,0,bottomImage.getWidth());
+         topImage.getRGB(topXY[0],topXY[1],width,height,topPixels,0,width);
+         bottomImage.getRGB(bottomXY[0],bottomXY[1],width,height,bottomPixels,0,width);
          int index = 0;  
          int ta1 = 0, tr1 = 0, tg1 = 0, tb1 = 0;  
          for(int row=0; row<height; row++) {  
              for(int col=0; col<width; col++) {  
                  index = row * width + col;  
-                 ta1 = (top[index] >> 24) & 0xff;  
-                 tr1 = (top[index] >> 16) & 0xff;  
-                 tg1 = (top[index] >> 8) & 0xff;  
-                 tb1 = top[index] & 0xff;  
-                 int[] rgb = getBlendData(tr1, tg1, tb1, bottom, row, col);  
+                 ta1 = (topPixels[index] >> 24) & 0xff;  
+                 tr1 = (topPixels[index] >> 16) & 0xff;  
+                 tg1 = (topPixels[index] >> 8) & 0xff;  
+                 tb1 = topPixels[index] & 0xff;  
+                 int[] rgb = getBlendData(tr1, tg1, tb1, bottomPixels, row, col);  
                  outPixels[index] = (ta1 << 24) | (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];                     
              }  
          }
-         dest.setRGB(0, 0, width,height, outPixels, 0, width);
+         dest.setRGB(topXY[0], topXY[1], width,height, outPixels, 0, width);
          return dest;
     }
 
