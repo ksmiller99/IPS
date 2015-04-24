@@ -8,7 +8,6 @@ package ips.high5.cmpt594;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -17,6 +16,7 @@ import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageFilter;
 import java.io.File;
@@ -41,14 +41,19 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.text.html.ImageView;
 
+import com.sun.glass.events.KeyEvent;
+
 @SuppressWarnings("serial")
 public class High5IPS extends JFrame {
-
+    //save path for file chooser
+    protected File CurrentDirectory = null;
+	
     /**
      *The constructor is a top-level class that takes no arguments.
 		 *@author Team High Five
@@ -64,38 +69,44 @@ public class High5IPS extends JFrame {
         setTitle("High 5 Image Processing System");
         
         //initialize 
-        undoStack = new Stack();
-        redoStack = new Stack();
+        undoStack = new Stack<BufferedImage>();
+        redoStack = new Stack<BufferedImage>();
         
-        // Creates a menubar for a JFrame
+        //Creates a menubar for a JFrame
         JMenuBar  menuBar = new JMenuBar();
         
-        // Add the menubar to the frame
+        //Add the menubar to the frame
         setJMenuBar(menuBar);
         
         // Define and add two drop down menu to the menubar
-        JMenu fileMenu = new JMenu("File");
-        JMenu editMenu = new JMenu("Edit");
-        JMenu helpMenu = new JMenu("Help");
+        JMenu fileMenu = new JMenu("File");		fileMenu.setMnemonic('F');
+        JMenu editMenu = new JMenu("Edit");		editMenu.setMnemonic('E');
+        JMenu helpMenu = new JMenu("Help");		helpMenu.setMnemonic('H');
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(helpMenu);
         
         // File Menu
-        openAction = new JMenuItem("Open");
-        saveAction = new JMenuItem("Save");
-        saveAsAction = new JMenuItem("Save as...");
-        recentAction = new JMenuItem("Recent...");
-        newMosaicAction = new JMenuItem("New Mosaic...");
-        closeAction = new JMenuItem("Close");
-        propertiesAction = new JMenuItem("Properties...");
-        exitAction = new JMenuItem("Exit");
+        openAction = new JMenuItem("Open");					openAction.setMnemonic('O');
+        saveAction = new JMenuItem("Save");					saveAction.setMnemonic('S');
+        saveAsAction = new JMenuItem("Save as...");			saveAsAction.setMnemonic('a');
+        recentAction = new JMenuItem("Recent...");			recentAction.setMnemonic('R');
+        newMosaicAction = new JMenuItem("New Mosaic...");	newMosaicAction.setMnemonic('M');
+        closeAction = new JMenuItem("Close");				closeAction.setMnemonic('C');
+        propertiesAction = new JMenuItem("Properties...");	propertiesAction.setMnemonic('P');
+        exitAction = new JMenuItem("Exit");					exitAction.setMnemonic('x');
         
         //Edit menu
-        undoAction = new JMenuItem("Undo");
+        undoAction = new JMenuItem("Undo");					
+        undoAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.CTRL_MASK));
         redoAction = new JMenuItem("Redo");
+        redoAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,InputEvent.CTRL_MASK));
         zoominAction = new JMenuItem("Zoom in");
-        zoomoutAction = new JMenuItem("Zoom out");
+        zoominAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS,InputEvent.CTRL_MASK));
+        zoomoutAction = new JMenuItem("Zoom _out");
+        zoomoutAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS,InputEvent.CTRL_MASK));
+        zoomFitAction = new JMenuItem("Zoom _fit");
+        zoomFitAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SLASH,InputEvent.CTRL_MASK));
         equalizeAction = new JMenuItem("Equalize");
         makeGSAction = new JMenuItem("Grayscale");
         makeRGBAction = new JMenuItem("Color...");
@@ -123,6 +134,7 @@ public class High5IPS extends JFrame {
         editMenu.addSeparator();
         editMenu.add(zoominAction);
         editMenu.add(zoomoutAction);
+        editMenu.add(zoomFitAction);
         editMenu.addSeparator();
         editMenu.add(equalizeAction);
         editMenu.add(makeGSAction);
@@ -175,6 +187,37 @@ public class High5IPS extends JFrame {
             }
         });
         
+     // Zoom In method
+        zoominAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	lPanel.zoomIn();
+            	lPanel.repaint();
+            	rPanel.zoomIn();
+            	rPanel.repaint();
+            }
+        });
+        
+        // Zoom Out method
+        zoomoutAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	lPanel.zoomOut();
+            	lPanel.repaint();
+            	rPanel.zoomOut();
+            	rPanel.repaint();
+            }
+        });
+        
+        // Zoom Fit method
+        zoomFitAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	lPanel.scaleToFit();
+            	lPanel.repaint();
+            	rPanel.scaleToFit();
+            	rPanel.repaint();
+            }
+        });
+        
+        
      // Recent method
         recentAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
@@ -213,7 +256,12 @@ public class High5IPS extends JFrame {
         // Edit|Equalize method
         equalizeAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-            	equalize();                
+            	try {
+					equalize();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}                
             }
         });
         
@@ -227,6 +275,12 @@ public class High5IPS extends JFrame {
             	
             	//copy left panel to the right side
             	rPanel.img = lPanel.img;
+            	try {
+					rPanel.setScale(lPanel.getScale());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             	
             	BufferedImage gsImg = new BufferedImage(lPanel.img.getWidth(),lPanel.img.getHeight(),BufferedImage.TYPE_BYTE_GRAY);
             	Graphics g = gsImg.getGraphics();
@@ -265,7 +319,12 @@ public class High5IPS extends JFrame {
         blendAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	//JOptionPane.showMessageDialog(null, "Single File Picker will be here.");                
-            	blendWith();
+            	try {
+					blendWith();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
         
@@ -389,7 +448,7 @@ public class High5IPS extends JFrame {
     private float opacityValue;
    
 //cc-end
-    protected static void equalize() {
+    protected static void equalize() throws Exception {
 		IpsEqualizer eq = new IpsEqualizer();
 		//BufferedImage eqImg = eq.equalize(lPanel.img);
 		BufferedImage eqImg= eq.histogramEqualize(lPanel.img);
@@ -397,6 +456,7 @@ public class High5IPS extends JFrame {
     		undoStack.push(rPanel.img);
     	undoAction.setEnabled(true);
     	rPanel.img = lPanel.img;
+    	rPanel.setScale(lPanel.getScale());
 		lPanel.img = eqImg;
 		rPanel.repaint();
 		lPanel.repaint();
@@ -415,6 +475,7 @@ public class High5IPS extends JFrame {
     protected static JMenuItem redoAction;
     protected static JMenuItem zoominAction;
     protected static JMenuItem zoomoutAction;
+    protected static JMenuItem zoomFitAction;
     protected static JMenuItem equalizeAction;
     protected static JMenuItem makeGSAction;
     protected static JMenuItem makeRGBAction;
@@ -424,6 +485,7 @@ public class High5IPS extends JFrame {
     protected static JMenuItem helpAboutAction;   
     
     protected static JToolBar blendToolBar;
+    
 	/**
      *One-sentence description ending with a period - one and only one period in description.
 		 *Additional description information - as many lines as needed HTML tags OK
@@ -482,13 +544,8 @@ public class High5IPS extends JFrame {
     protected void openFile(){
     	//Create a file chooser
     	
-    	final JFileChooser fc = new JFileChooser();
+    	final JFileChooser fc = new IpsFileChooser(this.CurrentDirectory);
     	 
-    	fc.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
-    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fc.setAcceptAllFileFilterUsed(false);
-        
-        //In response to a button click:
     	int returnVal = fc.showOpenDialog(this);
     	if (returnVal == JFileChooser.APPROVE_OPTION){
     		currentImageFilePath = fc.getSelectedFile().getPath();
@@ -498,28 +555,35 @@ public class High5IPS extends JFrame {
     			lPanel.img = ImageIO.read(new File(currentImageFilePath));
     			rPanel.img = null;
     		}catch(IOException e){
-    			//TODO
+    			e.printStackTrace();
     		}
+    		this.CurrentDirectory = fc.getCurrentDirectory();
     		
     		//enable edting menus
     		makeGSAction.setEnabled(true);
     		equalizeAction.setEnabled(true);
     		blendAction.setEnabled(true);
     		closeAction.setEnabled(true);
+    		zoominAction.setEnabled(true);
+    		zoomoutAction.setEnabled(true);
+    		zoomFitAction.setEnabled(true);
     		this.repaint();
 	           		
     	}
     }
     
-    protected void blendWith(){
+    protected void blendWith() throws Exception{
     	//Open a second image to blend
     	
+    	final JFileChooser fc = new IpsFileChooser(this.CurrentDirectory);
+    	/*
     	final JFileChooser fc = new JFileChooser();
     	 
     	fc.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
     	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fc.setAcceptAllFileFilterUsed(false);
-        
+        */
+    	
         //In response to a button click:
     	int returnVal = fc.showOpenDialog(this);
     	if (returnVal == JFileChooser.APPROVE_OPTION){
@@ -528,10 +592,13 @@ public class High5IPS extends JFrame {
 	       
     		try{
     			rPanel.img = lPanel.img;
+    			rPanel.setScale(lPanel.getScale());
     			lPanel.img = ImageIO.read(new File(currentImageFilePath));
     		}catch(IOException e){
     			//TODO
     		}
+    		
+    		this.CurrentDirectory = fc.getCurrentDirectory();
   
     		//enable edting menus   		
     		this.repaint();
@@ -554,6 +621,7 @@ public class High5IPS extends JFrame {
         redoAction.setEnabled(false);
         zoominAction.setEnabled(false);
         zoomoutAction.setEnabled(false);
+        zoomFitAction.setEnabled(false);
         equalizeAction.setEnabled(false);
         makeGSAction.setEnabled(false);
         makeRGBAction.setEnabled(false);
