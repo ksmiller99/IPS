@@ -18,9 +18,17 @@ import javax.swing.JPanel;
  */
 @SuppressWarnings("serial")
 public class IpsImagePanel extends JPanel{
+	/**
+	 * Image processed
+	 */
 	BufferedImage img;
 	
-	/*
+	/**
+	 * Scaled image to display
+	 */
+	BufferedImage scaledImg;
+	
+	/**
 	 * "No Image Selected" label
 	 */
 	JLabel lbl = new JLabel(); 
@@ -37,26 +45,38 @@ public class IpsImagePanel extends JPanel{
     	 */
     	int sw, sh;
     	
-    	if(img == null)
+    	if(img == null){
     		lbl.setText("No Image Selected");
+    		this.add(lbl);
+    	}
     	else{
     		sw = (int)(img.getWidth()*scale);
         	sh = (int)(img.getHeight()*scale);
-        	lbl.setText("");
-    		BufferedImage scaledImg = new BufferedImage(sw, sh, BufferedImage.TRANSLUCENT);
-	        Graphics2D g2 = scaledImg.createGraphics();
-	        super.paintComponent(g);
-    		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-	        g2.drawImage(img, 0, 0, sw, sh, null);
-	        g.drawImage(scaledImg, 0, 0, null);
-	        g2.dispose();
+        	//lbl.setText("");
+    		//scaledImg = new BufferedImage(sw, sh, BufferedImage.TRANSLUCENT);
+    		scaledImg=new BufferedImage(sw, sh, BufferedImage.TYPE_INT_RGB);
+    		//Graphics2D g2 = scaledImg.createGraphics();
+    		Graphics gr = scaledImg.createGraphics();
+    		gr.drawImage(img, 0, 0, sw, sh, null);
+    		gr.dispose();
+	        //super.paintComponent(g);
+    		//g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	        //g2.drawImage(img, 0, 0, sw, sh, null);
+	        //g.drawImage(scaledImg, 0, 0, null);
+	        //g2.dispose();
     	}
-        
+		super.paintComponent(g);
+		if (img != null) {
+			this.removeAll();
+				g.drawImage(scaledImg, 0, 0, null);
+		}
+
 
     }
 
 	IpsImagePanel(){
-		this.setLayout(new GridBagLayout());
+		super();
+		lbl.setText("No image selected");
 		this.add(lbl);
 		scale=1.0;
 		

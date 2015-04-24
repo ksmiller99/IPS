@@ -45,7 +45,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 @SuppressWarnings("serial")
 public class High5IPS extends JFrame {
-
+    //save path for file chooser
+    protected File CurrentDirectory = null;
+	
     /**
      *The constructor is a top-level class that takes no arguments.
 		 *@author Team High Five
@@ -61,13 +63,13 @@ public class High5IPS extends JFrame {
         setTitle("High 5 Image Processing System");
         
         //initialize 
-        undoStack = new Stack();
-        redoStack = new Stack();
+        undoStack = new Stack<BufferedImage>();
+        redoStack = new Stack<BufferedImage>();
         
-        // Creates a menubar for a JFrame
+        //Creates a menubar for a JFrame
         JMenuBar  menuBar = new JMenuBar();
         
-        // Add the menubar to the frame
+        //Add the menubar to the frame
         setJMenuBar(menuBar);
         
         // Define and add two drop down menu to the menubar
@@ -391,6 +393,7 @@ public class High5IPS extends JFrame {
     protected static JMenuItem helpAboutAction;   
     
     protected static JToolBar blendToolBar;
+    
 	/**
      *One-sentence description ending with a period - one and only one period in description.
 		 *Additional description information - as many lines as needed HTML tags OK
@@ -449,13 +452,8 @@ public class High5IPS extends JFrame {
     protected void openFile(){
     	//Create a file chooser
     	
-    	final JFileChooser fc = new JFileChooser();
+    	final JFileChooser fc = new IpsFileChooser(this.CurrentDirectory);
     	 
-    	fc.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
-    	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fc.setAcceptAllFileFilterUsed(false);
-        
-        //In response to a button click:
     	int returnVal = fc.showOpenDialog(this);
     	if (returnVal == JFileChooser.APPROVE_OPTION){
     		currentImageFilePath = fc.getSelectedFile().getPath();
@@ -465,8 +463,9 @@ public class High5IPS extends JFrame {
     			lPanel.img = ImageIO.read(new File(currentImageFilePath));
     			rPanel.img = null;
     		}catch(IOException e){
-    			//TODO
+    			e.printStackTrace();
     		}
+    		this.CurrentDirectory = fc.getCurrentDirectory();
     		
     		//enable edting menus
     		makeGSAction.setEnabled(true);
@@ -484,12 +483,15 @@ public class High5IPS extends JFrame {
     protected void blendWith() throws Exception{
     	//Open a second image to blend
     	
+    	final JFileChooser fc = new IpsFileChooser(this.CurrentDirectory);
+    	/*
     	final JFileChooser fc = new JFileChooser();
     	 
     	fc.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
     	fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fc.setAcceptAllFileFilterUsed(false);
-        
+        */
+    	
         //In response to a button click:
     	int returnVal = fc.showOpenDialog(this);
     	if (returnVal == JFileChooser.APPROVE_OPTION){
@@ -503,6 +505,8 @@ public class High5IPS extends JFrame {
     		}catch(IOException e){
     			//TODO
     		}
+    		
+    		this.CurrentDirectory = fc.getCurrentDirectory();
   
     		//enable edting menus   		
     		this.repaint();
