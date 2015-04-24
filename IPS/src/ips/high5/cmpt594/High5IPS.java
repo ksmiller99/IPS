@@ -93,6 +93,7 @@ public class High5IPS extends JFrame {
         redoAction = new JMenuItem("Redo");
         zoominAction = new JMenuItem("Zoom in");
         zoomoutAction = new JMenuItem("Zoom out");
+        zoomFitAction = new JMenuItem("Zoom fit");
         equalizeAction = new JMenuItem("Equalize");
         makeGSAction = new JMenuItem("Grayscale");
         makeRGBAction = new JMenuItem("Color...");
@@ -120,6 +121,7 @@ public class High5IPS extends JFrame {
         editMenu.addSeparator();
         editMenu.add(zoominAction);
         editMenu.add(zoomoutAction);
+        editMenu.add(zoomFitAction);
         editMenu.addSeparator();
         editMenu.add(equalizeAction);
         editMenu.add(makeGSAction);
@@ -172,6 +174,31 @@ public class High5IPS extends JFrame {
             }
         });
         
+     // Zoom In method
+        zoominAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	lPanel.zoomIn();
+            	lPanel.repaint();
+            }
+        });
+        
+        // Zoom Out method
+        zoomoutAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	lPanel.zoomOut();
+            	lPanel.repaint();
+            }
+        });
+        
+        // Zoom Fit method
+        zoomFitAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	lPanel.scaleToFit();
+            	lPanel.repaint();
+            }
+        });
+        
+        
      // Recent method
         recentAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
@@ -210,7 +237,12 @@ public class High5IPS extends JFrame {
         // Edit|Equalize method
         equalizeAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-            	equalize();                
+            	try {
+					equalize();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}                
             }
         });
         
@@ -224,6 +256,12 @@ public class High5IPS extends JFrame {
             	
             	//copy left panel to the right side
             	rPanel.img = lPanel.img;
+            	try {
+					rPanel.setScale(lPanel.getScale());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             	
             	BufferedImage gsImg = new BufferedImage(lPanel.img.getWidth(),lPanel.img.getHeight(),BufferedImage.TYPE_BYTE_GRAY);
             	Graphics g = gsImg.getGraphics();
@@ -262,7 +300,12 @@ public class High5IPS extends JFrame {
         blendAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	//JOptionPane.showMessageDialog(null, "Single File Picker will be here.");                
-            	blendWith();
+            	try {
+					blendWith();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
         
@@ -311,7 +354,7 @@ public class High5IPS extends JFrame {
        // blendToolBar.setEnabled(false);
     }
 
-    protected static void equalize() {
+    protected static void equalize() throws Exception {
 		IpsEqualizer eq = new IpsEqualizer();
 		//BufferedImage eqImg = eq.equalize(lPanel.img);
 		BufferedImage eqImg= eq.histogramEqualize(lPanel.img);
@@ -319,6 +362,7 @@ public class High5IPS extends JFrame {
     		undoStack.push(rPanel.img);
     	undoAction.setEnabled(true);
     	rPanel.img = lPanel.img;
+    	rPanel.setScale(lPanel.getScale());
 		lPanel.img = eqImg;
 		rPanel.repaint();
 		lPanel.repaint();
@@ -337,6 +381,7 @@ public class High5IPS extends JFrame {
     protected static JMenuItem redoAction;
     protected static JMenuItem zoominAction;
     protected static JMenuItem zoomoutAction;
+    protected static JMenuItem zoomFitAction;
     protected static JMenuItem equalizeAction;
     protected static JMenuItem makeGSAction;
     protected static JMenuItem makeRGBAction;
@@ -428,12 +473,15 @@ public class High5IPS extends JFrame {
     		equalizeAction.setEnabled(true);
     		blendAction.setEnabled(true);
     		closeAction.setEnabled(true);
+    		zoominAction.setEnabled(true);
+    		zoomoutAction.setEnabled(true);
+    		zoomFitAction.setEnabled(true);
     		this.repaint();
 	           		
     	}
     }
     
-    protected void blendWith(){
+    protected void blendWith() throws Exception{
     	//Open a second image to blend
     	
     	final JFileChooser fc = new JFileChooser();
@@ -450,6 +498,7 @@ public class High5IPS extends JFrame {
 	       
     		try{
     			rPanel.img = lPanel.img;
+    			rPanel.setScale(lPanel.getScale());
     			lPanel.img = ImageIO.read(new File(currentImageFilePath));
     		}catch(IOException e){
     			//TODO
@@ -474,6 +523,7 @@ public class High5IPS extends JFrame {
         redoAction.setEnabled(false);
         zoominAction.setEnabled(false);
         zoomoutAction.setEnabled(false);
+        zoomFitAction.setEnabled(false);
         equalizeAction.setEnabled(false);
         makeGSAction.setEnabled(false);
         makeRGBAction.setEnabled(false);
