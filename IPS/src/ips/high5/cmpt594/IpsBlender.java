@@ -71,11 +71,10 @@ import java.awt.image.ColorModel;
 		 */
     private float opacity;
     
-    public static final int LINER_BLEND=1;
-    public static final int DISSOLVE_BLEND=2;
-    public static final int MULTIPLY_BLEND=3;
-    public static final int SCREEN_BLEND=4;
-    public static final int OVERLAY_BLEND=5;
+    public static final int LINEAR_BLEND=1;  
+    public static final int MULTIPLY_BLEND=2;
+    public static final int SCREEN_BLEND=3;
+    public static final int OVERLAY_BLEND=4;
     
     public static final int LEFT_TOP=1;
     public static final int LEFT_BOTTOM=2;
@@ -150,13 +149,13 @@ import java.awt.image.ColorModel;
 	/**
      * @return
      */
-    public void imageExchage() {
+  /*  public void imageExchage() {
         // TODO implement here
      	BufferedImage temp;
     	temp=topImage;
     	topImage=bottomImage;
     	bottomImage=temp;            
-    }
+    }*/
 
     /**
      * @return
@@ -170,11 +169,11 @@ import java.awt.image.ColorModel;
     }
     
     //dissolve blend mode
-    private int dissolveBlendMode(int x, int y)
+    /*private int dissolveBlendMode(int x, int y)
     {
     	return y;
  
-    }
+    }*/
     
     //Multiply Mode
     private int multiplyBlendMode(int x, int y)
@@ -204,19 +203,19 @@ import java.awt.image.ColorModel;
     	int tg=(input[index]>>8)&0xff;
     	int tb=input[index]&0xff;
     	int[] rgb=new int[3];
-    	if(mode==LINER_BLEND)
+    	if(mode==LINEAR_BLEND)
     	{
     		rgb[0]=linearBlendMode(tr1, tr, opacity);
     		rgb[1]=linearBlendMode(tg1, tg, opacity);
     		rgb[2]=linearBlendMode(tb1, tb, opacity);
     	}
-    	else if(mode==DISSOLVE_BLEND)
+    	/*else if(mode==DISSOLVE_BLEND)
     	{
     		
     		rgb[0]=dissolveBlendMode(tr1, tr);
     		rgb[1]=dissolveBlendMode(tg1, tg);
     		rgb[2]=dissolveBlendMode(tb1, tb);
-    	}
+    	}*/
     	else if(mode==MULTIPLY_BLEND)
     	{
     		rgb[0]=multiplyBlendMode(tr1, tr);

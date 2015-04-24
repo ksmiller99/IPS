@@ -8,6 +8,7 @@ package ips.high5.cmpt594;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -42,6 +43,8 @@ import javax.swing.JFrame;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.basic.BasicButtonUI;
+import javax.swing.text.html.ImageView;
 
 @SuppressWarnings("serial")
 public class High5IPS extends JFrame {
@@ -273,11 +276,35 @@ public class High5IPS extends JFrame {
             }
         });
         
-        JButton topLeftAligned=new JButton("Top Left Aligned");
-        JButton btmLeftAligned=new JButton("Bottom Left Aligned");
-        JButton topRightAligned=new JButton("Top Right Aligned");
-        JButton btmRightAligned=new JButton("Bottom Right Aligned");
-        JButton centerAligned=new JButton("Center");
+        //cc-start
+        
+      
+      // set aligned method buttons
+        JButton topLeftAligned=new JButton(new ImageIcon("image/LEFT_TOP.png"));
+        JButton btmLeftAligned=new JButton(new ImageIcon("image/LEFT_BOTTOM.png"));
+        JButton topRightAligned=new JButton(new ImageIcon("image/RIGHT_TOP.png"));
+        JButton btmRightAligned=new JButton(new ImageIcon("image/RIGHT_BOTTOM.png"));
+        JButton centerAligned=new JButton(new ImageIcon("image/CENTER.png"));
+        
+        topLeftAligned.setToolTipText("Top Left Aligned");
+        btmLeftAligned.setToolTipText("Bottom Left Aligned");
+        topRightAligned.setToolTipText("Top Right Aligned");
+        btmRightAligned.setToolTipText("Bottom Right Aligned");
+        centerAligned.setToolTipText("Centered");
+       
+        //blending option buttons
+        JButton linearBtn=new JButton("Linear");
+        JButton multiplyBtn=new JButton("Multiply");
+        JButton screenBtn=new JButton("Screen");
+        JButton overlayBtn=new JButton("Overlay");
+        
+        linearBtn.setToolTipText("Linear Blending");
+        multiplyBtn.setToolTipText("Multiply Blending");
+        screenBtn.setToolTipText("Screen Blending");
+        overlayBtn.setToolTipText("Overlay Blending");
+        
+        
+        //add buttons to toolbar
         
         blendToolBar = new JToolBar("Blend Tool Kit");
         blendToolBar.addSeparator();
@@ -288,29 +315,80 @@ public class High5IPS extends JFrame {
         blendToolBar.add(btmRightAligned);
         blendToolBar.add(centerAligned);
        
-        topLeftAligned.setToolTipText("Top Left Aligned");
-        btmLeftAligned.setToolTipText("Bottom Left Aligned");
-        topRightAligned.setToolTipText("Top Right Aligned");
-        btmRightAligned.setToolTipText("Bottom Right Aligned");
-        
+        blendToolBar.add(linearBtn);
+        blendToolBar.add(multiplyBtn);
+        blendToolBar.add(screenBtn);
+        blendToolBar.add(overlayBtn);
+      
+        //set up aligned:start
         topLeftAligned.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				alignedValue=IpsBlender.LEFT_TOP;
 			}
 		});
+        
+        topRightAligned.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				alignedValue=IpsBlender.RIGHT_TOP;
+			}
+		});
+        
+        btmLeftAligned.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				alignedValue=IpsBlender.LEFT_BOTTOM;
+			}
+		});
+        
+        btmRightAligned.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				alignedValue=IpsBlender.RIGHT_BOTTOM;
+			}
+		});
+        
+        centerAligned.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				alignedValue=IpsBlender.CENTER;
+			}
+		});
+        //sent up aligned: end
        
       //  JMenuBar blendMenuBar=new JMenuBar();
       //  setJMenuBar(blendMenuBar,);
         //JPanel p=new JPanel();
        menuBar.add(blendToolBar, BorderLayout.NORTH);
         
-        blendToolBar.setVisible(false);
+     //   blendToolBar.setVisible(false);
        // blendToolBar.setEnabled(false);
+       alignedValue=IpsBlender.CENTER;
+       modeValue=IpsBlender.LINEAR_BLEND;
+       opacityValue=1;
+        
     }
 
+    protected void blends(int aligned, int mode, float a){
+    	
+    	
+    }
+    private int alignedValue;
+    private int modeValue;
+    private float opacityValue;
+   
+//cc-end
     protected static void equalize() {
 		IpsEqualizer eq = new IpsEqualizer();
 		//BufferedImage eqImg = eq.equalize(lPanel.img);
@@ -461,6 +539,8 @@ public class High5IPS extends JFrame {
     	
     	}
     }
+    
+    
     
     /**
      * Initializes menu item visibility, called at start and file|close
