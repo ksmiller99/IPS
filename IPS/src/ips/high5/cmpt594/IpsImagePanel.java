@@ -40,7 +40,7 @@ public class IpsImagePanel extends JPanel{
 	
     @Override
     protected void paintComponent(Graphics g) {
-    	/*
+    	/**
     	 * scaled height and width
     	 */
     	int sw, sh;
@@ -52,18 +52,12 @@ public class IpsImagePanel extends JPanel{
     	else{
     		sw = (int)(img.getWidth()*scale);
         	sh = (int)(img.getHeight()*scale);
-        	//lbl.setText("");
-    		//scaledImg = new BufferedImage(sw, sh, BufferedImage.TRANSLUCENT);
-    		scaledImg=new BufferedImage(sw, sh, BufferedImage.TYPE_INT_RGB);
+        	scaledImg=new BufferedImage(sw, sh, BufferedImage.TYPE_INT_RGB);
     		//Graphics2D g2 = scaledImg.createGraphics();
     		Graphics gr = scaledImg.createGraphics();
     		gr.drawImage(img, 0, 0, sw, sh, null);
     		gr.dispose();
-	        //super.paintComponent(g);
-    		//g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-	        //g2.drawImage(img, 0, 0, sw, sh, null);
-	        //g.drawImage(scaledImg, 0, 0, null);
-	        //g2.dispose();
+	        
     	}
 		super.paintComponent(g);
 		if (img != null) {
@@ -84,8 +78,10 @@ public class IpsImagePanel extends JPanel{
 	
 	
 	public void scaleToFit(){
-		scale = Math.min((double)this.getWidth()/(double)img.getWidth(),(double)this.getHeight()/(double)img.getHeight());
-		this.repaint();
+		if (img !=null){
+			scale = Math.min((double)this.getWidth()/(double)img.getWidth(),(double)this.getHeight()/(double)img.getHeight());
+			this.repaint();
+		}
 	}
 	
 	public void zoomIn(){

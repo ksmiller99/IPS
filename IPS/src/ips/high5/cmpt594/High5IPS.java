@@ -16,6 +16,7 @@ import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageFilter;
 import java.io.File;
@@ -40,8 +41,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.sun.glass.events.KeyEvent;
 
 @SuppressWarnings("serial")
 public class High5IPS extends JFrame {
@@ -73,29 +77,34 @@ public class High5IPS extends JFrame {
         setJMenuBar(menuBar);
         
         // Define and add two drop down menu to the menubar
-        JMenu fileMenu = new JMenu("File");
-        JMenu editMenu = new JMenu("Edit");
-        JMenu helpMenu = new JMenu("Help");
+        JMenu fileMenu = new JMenu("File");		fileMenu.setMnemonic('F');
+        JMenu editMenu = new JMenu("Edit");		editMenu.setMnemonic('E');
+        JMenu helpMenu = new JMenu("Help");		helpMenu.setMnemonic('H');
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(helpMenu);
         
         // File Menu
-        openAction = new JMenuItem("Open");
-        saveAction = new JMenuItem("Save");
-        saveAsAction = new JMenuItem("Save as...");
-        recentAction = new JMenuItem("Recent...");
-        newMosaicAction = new JMenuItem("New Mosaic...");
-        closeAction = new JMenuItem("Close");
-        propertiesAction = new JMenuItem("Properties...");
-        exitAction = new JMenuItem("Exit");
+        openAction = new JMenuItem("Open");					openAction.setMnemonic('O');
+        saveAction = new JMenuItem("Save");					saveAction.setMnemonic('S');
+        saveAsAction = new JMenuItem("Save as...");			saveAsAction.setMnemonic('a');
+        recentAction = new JMenuItem("Recent...");			recentAction.setMnemonic('R');
+        newMosaicAction = new JMenuItem("New Mosaic...");	newMosaicAction.setMnemonic('M');
+        closeAction = new JMenuItem("Close");				closeAction.setMnemonic('C');
+        propertiesAction = new JMenuItem("Properties...");	propertiesAction.setMnemonic('P');
+        exitAction = new JMenuItem("Exit");					exitAction.setMnemonic('x');
         
         //Edit menu
-        undoAction = new JMenuItem("Undo");
+        undoAction = new JMenuItem("Undo");					
+        undoAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,InputEvent.CTRL_MASK));
         redoAction = new JMenuItem("Redo");
+        redoAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,InputEvent.CTRL_MASK));
         zoominAction = new JMenuItem("Zoom in");
-        zoomoutAction = new JMenuItem("Zoom out");
-        zoomFitAction = new JMenuItem("Zoom fit");
+        zoominAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS,InputEvent.CTRL_MASK));
+        zoomoutAction = new JMenuItem("Zoom _out");
+        zoomoutAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS,InputEvent.CTRL_MASK));
+        zoomFitAction = new JMenuItem("Zoom _fit");
+        zoomFitAction.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SLASH,InputEvent.CTRL_MASK));
         equalizeAction = new JMenuItem("Equalize");
         makeGSAction = new JMenuItem("Grayscale");
         makeRGBAction = new JMenuItem("Color...");
@@ -181,6 +190,8 @@ public class High5IPS extends JFrame {
             public void actionPerformed(ActionEvent arg0) {
             	lPanel.zoomIn();
             	lPanel.repaint();
+            	rPanel.zoomIn();
+            	rPanel.repaint();
             }
         });
         
@@ -189,6 +200,8 @@ public class High5IPS extends JFrame {
             public void actionPerformed(ActionEvent arg0) {
             	lPanel.zoomOut();
             	lPanel.repaint();
+            	rPanel.zoomOut();
+            	rPanel.repaint();
             }
         });
         
@@ -197,6 +210,8 @@ public class High5IPS extends JFrame {
             public void actionPerformed(ActionEvent arg0) {
             	lPanel.scaleToFit();
             	lPanel.repaint();
+            	rPanel.scaleToFit();
+            	rPanel.repaint();
             }
         });
         
