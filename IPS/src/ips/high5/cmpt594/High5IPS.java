@@ -326,6 +326,8 @@ public class High5IPS extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				//JOptionPane.showMessageDialog(null, "Probably should be some sort of dialog box here for Hough options...");
 				BufferedImage eImage=new IpsFeatureDetector().detectEdges(lPanel.img);
+				undoStack.push(rPanel.img);
+				undoAction.setEnabled(true);
 				rPanel.img=lPanel.img;
 				lPanel.img=eImage;
 				rPanel.repaint();
@@ -339,6 +341,8 @@ public class High5IPS extends JFrame {
 				// BufferedImage sImage=new
 				// BufferedImage(lPanel.img.getWidth(),lPanel.img.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
 				BufferedImage sImage = new IpsSharpener().sharpen(lPanel.img);
+				undoStack.push(rPanel.img);
+				undoAction.setEnabled(true);
 				rPanel.img = lPanel.img;
 				lPanel.img = sImage;
 				rPanel.repaint();
