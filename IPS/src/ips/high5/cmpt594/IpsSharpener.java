@@ -46,8 +46,7 @@ public class  IpsSharpener {
      * @return
      */
     public BufferedImage sharpen(BufferedImage src) {
-        // TODO implement here
-    	BufferedImage dest=new BufferedImage(src.getWidth(),src.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
+        BufferedImage dest=new BufferedImage(src.getWidth(),src.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
         float[] data={-1.0f, -1.0f, -1.0f, -1.0f, 10.0f, -1.0f, -1.0f, -1.0f, -1.0f };
         Kernel kernel=new Kernel(3,3,data);
         ConvolveOp co=new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,null);

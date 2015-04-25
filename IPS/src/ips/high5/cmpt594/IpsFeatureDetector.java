@@ -76,8 +76,8 @@ public class  IpsFeatureDetector {
         // TODO implement here
     	BufferedImage dest=new BufferedImage(src.getWidth(),src.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
         // GaussLaplacian
-    	float[] data={-2, -4, -4, -4, -2,-4, 0, 8, 0, -4,-4, 8, 24, 8, -4,-4, 0, 8, 0, -4,-2, -4, -4, -4, -2 };
-        Kernel kernel=new Kernel(5,5,data);
+    	float[] data={0.0f, -0.75f, 0.0f, -0.75f, 3.0f, -0.75f, 0.0f, -0.75f, 0.0f };
+    	Kernel kernel=new Kernel(3,3,data);
         ConvolveOp co=new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,null);
         co.filter(src, dest);
         return dest;
@@ -96,6 +96,7 @@ public class  IpsFeatureDetector {
     		}
     	return dest;
     }
+    
     public BufferedImage binaryImage(BufferedImage src)
     {
     	BufferedImage dest=new BufferedImage(src.getWidth(),src.getHeight(),BufferedImage.TYPE_BYTE_BINARY);
