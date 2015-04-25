@@ -315,7 +315,14 @@ public class High5IPS extends JFrame {
         // Sharpen method
         sharpenAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-            	JOptionPane.showMessageDialog(null, "Probably should be some sort of dialog box here for sharpen options...");                
+            	//JOptionPane.showMessageDialog(null, "Probably should be some sort of dialog box here for sharpen options...");                
+            	//BufferedImage sImage=new BufferedImage(lPanel.img.getWidth(),lPanel.img.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
+            	BufferedImage sImage=new IpsSharpener().sharpen(lPanel.img);
+            	rPanel.img=lPanel.img;
+            	lPanel.img=sImage;
+            	rPanel.repaint();
+            	lPanel.repaint();
+            	
             }
         });
         
@@ -662,6 +669,9 @@ public class High5IPS extends JFrame {
     		}
     		this.CurrentDirectory = fc.getCurrentDirectory();
     		
+    		currentImage=lPanel.img;
+    		originalTop=lPanel.img;
+    		
     		//enable edting menus
     		makeGSAction.setEnabled(true);
     		equalizeAction.setEnabled(true);
@@ -670,6 +680,7 @@ public class High5IPS extends JFrame {
     		zoominAction.setEnabled(true);
     		zoomoutAction.setEnabled(true);
     		zoomFitAction.setEnabled(true);
+    		sharpenAction.setEnabled(true);
     		this.repaint();
 	           		
     	}
