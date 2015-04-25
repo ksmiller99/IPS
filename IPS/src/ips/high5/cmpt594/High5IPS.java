@@ -133,7 +133,7 @@ public class High5IPS extends JFrame {
 		equalizeAction = new JMenuItem("Equalize");
 		makeGSAction = new JMenuItem("Grayscale");
 		makeRGBAction = new JMenuItem("Color...");
-		houghAction = new JMenuItem("Hough Transform...");
+		houghAction = new JMenuItem("Hough Transform...");// lineDtcAction=new JMenuItem("Line Detection"); edgeDtcAction=new JMenuItem("Edge Detection");
 		blendAction = new JMenuItem("Blend with...");
 		sharpenAction = new JMenuItem("Sharpen...");
 
@@ -162,8 +162,8 @@ public class High5IPS extends JFrame {
 		editMenu.add(equalizeAction);
 		editMenu.add(makeGSAction);
 		editMenu.add(makeRGBAction);
-		editMenu.add(houghAction);
-		editMenu.add(sharpenAction);
+		editMenu.add(houghAction);// houghAction.add(lineDtcAction);houghAction.add(edgeDtcAction);
+        editMenu.add(sharpenAction);
 		editMenu.add(blendAction);
 
 		// Help Actions
@@ -324,8 +324,12 @@ public class High5IPS extends JFrame {
 		// Hough method
 		houghAction.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null,
-						"Probably should be some sort of dialog box here for Hough options...");
+				//JOptionPane.showMessageDialog(null, "Probably should be some sort of dialog box here for Hough options...");
+				BufferedImage eImage=new IpsFeatureDetector().detectEdges(lPanel.img);
+				rPanel.img=lPanel.img;
+				lPanel.img=eImage;
+				rPanel.repaint();
+				lPanel.repaint();
 			}
 		});
 
@@ -632,10 +636,12 @@ public class High5IPS extends JFrame {
 	protected static JMenuItem blendAction;
 	protected static JMenuItem sharpenAction;
 	protected static JMenuItem helpAboutAction;
-
+	// protected static JMenuItem featureDetect;
+	
 	protected static JToolBar blendToolBar;
 	protected static JPopupMenu blendPopup;
-	
+	// protected static JMenuItem lineDtcAction;
+	//  protected static JMenuItem edgeDtcAction;
 	/**
 	 * One-sentence description ending with a period - one and only one period
 	 * in description. Additional description information - as many lines as
@@ -730,6 +736,7 @@ public class High5IPS extends JFrame {
 			zoomoutAction.setEnabled(true);
 			zoomFitAction.setEnabled(true);
 			sharpenAction.setEnabled(true);
+			houghAction.setEnabled(true);
 			this.repaint();
 
 		}
