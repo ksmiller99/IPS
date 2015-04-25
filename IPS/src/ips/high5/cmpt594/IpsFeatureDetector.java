@@ -1,8 +1,10 @@
 package ips.high5.cmpt594;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.util.Vector;
 
 /**
  *The description
@@ -42,16 +44,30 @@ public class  IpsFeatureDetector {
     public IpsBinaryImage featuresImage;
 
 
-    /**
+	/**
      * @return
      */
-    public BufferedImage detectLines(BufferedImage src) {
+    public void detectLines(BufferedImage src) {
         // TODO implement here
-        BufferedImage dest=this.binaryImage(src);
+        //BufferedImage dest=this.binaryImage(src);
         
+        /*HoughTransform(src.getWidth(), src.getHeight()); 
         
-        return dest;
-    }
+        // add the points from the image (or call the addPoint method separately if your points are not in an image 
+        addPoints(src); 
+ 
+        // get the lines out 
+        Vector<HoughLine> lines = getLines(30); 
+ 
+        // draw the lines back onto the image 
+        for (int j = 0; j < lines.size(); j++) { 
+            HoughLine line = lines.elementAt(j); 
+            line.draw(src, Color.RED.getRGB()); 
+        } 
+        //return dest;
+*/    }
+    
+    
 
     /**
      * @return
@@ -66,6 +82,8 @@ public class  IpsFeatureDetector {
         co.filter(src, dest);
         return dest;
     }
+    
+    
 
     public BufferedImage greyImage(BufferedImage src)
     {
