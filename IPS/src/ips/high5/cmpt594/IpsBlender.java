@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.util.Arrays;
 
 /**
  *The description
@@ -188,13 +189,23 @@ import java.awt.image.ColorModel;
     
     private int overlayBlendMode(int x, int y)
     {
-    	if (y<=127) return 2*x*y;
+    	if (y<=127) return 2*x*y/255;
     	else return 255-2*(255-x)*(255-y)/255;
     }
     
     private int[] getBlendData(int tr1, int tg1, int tb1, int[] input, int row, int col){
-    	int width=bottomImage.getWidth();
-    	int height=bottomImage.getHeight();
+    	int[] topXY=new int[4];
+    	int[] bottomXY=new int[4];
+    	int[][] returnV=new int[2][4];
+    	returnV=getStarEnd();
+    	for(int i=0;i<4;i++)
+    	{
+    		topXY[i]=returnV[0][i];
+    		bottomXY[i]=returnV[1][i];
+    	}
+    	int height=topXY[3]-topXY[1];
+    	int width=topXY[2]-topXY[0];
+    	
     	if (col>=width||row>=height){
     		return new int[]{tr1, tg1, tb1};
     	}
@@ -242,13 +253,13 @@ import java.awt.image.ColorModel;
     	else return y;
     }
     
-    public void getStarEnd(int[] top, int[] bottom)
+    public int[][] getStarEnd()
     {
     	//index 0,1: startX, startY
     	//index 2,3: endX, endY
     	//scanwidth= index 2- index 0
-    	//top=new int[4];
-    	//bottom=new int[4];
+    	int[] top=new int[4];
+    	int[] bottom=new int[4];
     	
     	if(aligned==LEFT_TOP)
     	{
@@ -256,6 +267,7 @@ import java.awt.image.ColorModel;
 			top[1]=bottom[1]=0;
     		top[2]=bottom[2]=getMinInt(topImage.getWidth(),bottomImage.getWidth());
     		top[3]=bottom[3]=getMinInt(topImage.getHeight(),bottomImage.getHeight());
+    		//System.out.println(Arrays.toString(top));
     	}
     	else if (aligned==LEFT_BOTTOM)
     	{
@@ -351,23 +363,50 @@ import java.awt.image.ColorModel;
     		}
     		
     	}
+    	int[][] returnV=new int[2][4];
+    	//for(int i=0;i<2;i++)
+    	for(int j=0;j<4;j++)
+    	{
+    		returnV[0][j]=top[j];
+    		returnV[1][j]=bottom[j];
+    	}
+    	
+    	return returnV;
     	
     }
     
-    public BufferedImage blend(BufferedImage dest){
+    public BufferedImage blend(){
         // TODO implement here
     	
     	int[] topXY=new int[4];
     	int[] bottomXY=new int[4];
-    	getStarEnd(topXY, bottomXY);
-    	int width=topXY[3]-topXY[1];
-    	int height=topXY[2]-topXY[0];
-    //	BufferedImage dest;
-    	if(dest==null)     	
-    		dest=createCompatibleDestImage(topImage, null);  	
+    	int[][] returnV=new int[2][4];
+    	returnV=getStarEnd();
+    	for(int i=0;i<4;i++)
+    	{
+    		topXY[i]=returnV[0][i];
+    		bottomXY[i]=returnV[1][i];
+    	}
+    	int height=topXY[3]-topXY[1];
+    	int width=topXY[2]-topXY[0];
+    	
+    	//test-start
+    	//System.out.println(Arrays.toString(topXY));
+    	//System.out.println(width);
+    	//System.out.println(height);
+    	//test-end
+    	
+    	BufferedImage dest=new BufferedImage(topImage.getWidth(), topImage.getHeight(), topImage.getType());
+    	//dest=topImage;
+    	
+    	//BufferedImage dest=createCompatibleDestImage(topImage,null);
+    	
+    	//if(dest==null)     	
+    	//dest=createCompatibleDestImage(topImage, null);  	
     	 int[] topPixels=new int[width*height];
          int[] bottomPixels=new int[width*height];
          int[] outPixels=new int[width*height];
+         
          topImage.getRGB(topXY[0],topXY[1],width,height,topPixels,0,width);
          bottomImage.getRGB(bottomXY[0],bottomXY[1],width,height,bottomPixels,0,width);
          int index = 0;  
@@ -384,7 +423,10 @@ import java.awt.image.ColorModel;
              }  
          }
          dest.setRGB(topXY[0], topXY[1], width,height, outPixels, 0, width);
+        // System.out.println(this.mode);
+        // System.out.println(this.opacity);
          return dest;
+         
     }
 
 

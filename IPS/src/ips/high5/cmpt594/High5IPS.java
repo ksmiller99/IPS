@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -40,9 +41,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JSlider;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.text.html.ImageView;
@@ -339,11 +343,11 @@ public class High5IPS extends JFrame {
         
       
       // set aligned method buttons
-        JButton topLeftAligned=new JButton(new ImageIcon("image/LEFT_TOP.png"));
-        JButton btmLeftAligned=new JButton(new ImageIcon("image/LEFT_BOTTOM.png"));
-        JButton topRightAligned=new JButton(new ImageIcon("image/RIGHT_TOP.png"));
-        JButton btmRightAligned=new JButton(new ImageIcon("image/RIGHT_BOTTOM.png"));
-        JButton centerAligned=new JButton(new ImageIcon("image/CENTER.png"));
+        JButton topLeftAligned=new JButton(new ImageIcon("images/LEFT_TOP.png"));
+        JButton btmLeftAligned=new JButton(new ImageIcon("images/LEFT_BOTTOM.png"));
+        JButton topRightAligned=new JButton(new ImageIcon("images/RIGHT_TOP.png"));
+        JButton btmRightAligned=new JButton(new ImageIcon("images/RIGHT_BOTTOM.png"));
+        JButton centerAligned=new JButton(new ImageIcon("images/CENTER.png"));
         
         topLeftAligned.setToolTipText("Top Left Aligned");
         btmLeftAligned.setToolTipText("Bottom Left Aligned");
@@ -351,17 +355,44 @@ public class High5IPS extends JFrame {
         btmRightAligned.setToolTipText("Bottom Right Aligned");
         centerAligned.setToolTipText("Centered");
        
+        //opacity setting
+        JSlider slider=new JSlider(0,100);
+      //  Dimension d=slider.getPreferredSize();
+      //  slider.setPreferredSize(new Dimension((int)d.getWidth()/2, (int)d.getHeight()));
+        slider.setSize(new Dimension(100,20));
+        slider.setPreferredSize(new Dimension(50,20));
+       // System.out.println(slider.getWidth());
+        slider.setMajorTickSpacing(10);
+        slider.setMinorTickSpacing(5);
+     //   slider.setLayout(new GridLayout(2,1));
+     //    slider.setSnapToTicks(true); 
+        slider.setPaintLabels(true);
+        //
+    /*    JPanel sliderPanel=new JPanel();
+        GridBagConstraints gbc_sliderPanel = new GridBagConstraints();
+        gbc_sliderPanel.gridx=0;
+        gbc_sliderPanel.gridy=0;
+        gbc_sliderPanel.weightx=50;
+        gbc_sliderPanel.weighty=20;
+        gbc_sliderPanel.fill = GridBagConstraints.BOTH;
+        GridBagLayout.setConstraints(sliderPanel, gbc_sliderPanel);       
+        sliderPanel.setPreferredSize(new Dimension(50,20));
+        sliderPanel.add(slider);*/
+        
         //blending option buttons
         JButton linearBtn=new JButton("Linear");
         JButton multiplyBtn=new JButton("Multiply");
         JButton screenBtn=new JButton("Screen");
         JButton overlayBtn=new JButton("Overlay");
         
+        JButton resetBtn=new JButton("Reset");
+        
         linearBtn.setToolTipText("Linear Blending");
         multiplyBtn.setToolTipText("Multiply Blending");
         screenBtn.setToolTipText("Screen Blending");
         overlayBtn.setToolTipText("Overlay Blending");
         
+        resetBtn.setToolTipText("Reset");
         
         //add buttons to toolbar
         
@@ -373,11 +404,26 @@ public class High5IPS extends JFrame {
         blendToolBar.add(topRightAligned);
         blendToolBar.add(btmRightAligned);
         blendToolBar.add(centerAligned);
-       
+        
+        blendToolBar.add(slider);
+       // blendToolBar.add(sliderPanel);
+        
         blendToolBar.add(linearBtn);
         blendToolBar.add(multiplyBtn);
         blendToolBar.add(screenBtn);
         blendToolBar.add(overlayBtn);
+        blendToolBar.add(resetBtn);
+        
+        
+        //  setJMenuBar(blendMenuBar,);
+        //JPanel p=new JPanel();
+       menuBar.add(blendToolBar, BorderLayout.NORTH);
+        
+        // blendToolBar.setVisible(false);
+       // blendToolBar.setEnabled(false);
+       //alignedValue=IpsBlender.CENTER;
+       //modeValue=IpsBlender.LINEAR_BLEND;
+       //opacityValue=1;
       
         //set up aligned:start
         topLeftAligned.addActionListener(new ActionListener() {
@@ -426,26 +472,83 @@ public class High5IPS extends JFrame {
 		});
         //sent up aligned: end
        
-      //  JMenuBar blendMenuBar=new JMenuBar();
-      //  setJMenuBar(blendMenuBar,);
-        //JPanel p=new JPanel();
-       menuBar.add(blendToolBar, BorderLayout.NORTH);
-        
-     //   blendToolBar.setVisible(false);
-       // blendToolBar.setEnabled(false);
-       alignedValue=IpsBlender.CENTER;
-       modeValue=IpsBlender.LINEAR_BLEND;
-       opacityValue=1;
-        
+      slider.addChangeListener(new ChangeListener() {
+		
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			// TODO Auto-generated method stub
+			opacityValue=((float) slider.getValue())/100;
+			//System.out.println(opacityValue);
+			
+		}
+	});
+      
+     linearBtn.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+			ipsBlender.setMode(IpsBlender.LINEAR_BLEND);
+			ipsBlender.setOpacity(opacityValue);
+			ipsBlender.setAligned(alignedValue);
+			lPanel.img=ipsBlender.blend();
+			lPanel.repaint();
+		}
+	});
+     multiplyBtn.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			ipsBlender.setMode(IpsBlender.MULTIPLY_BLEND);
+			ipsBlender.setAligned(alignedValue);
+			lPanel.img=ipsBlender.blend();
+			lPanel.repaint();
+		}
+	});
+     screenBtn.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			ipsBlender.setMode(IpsBlender.SCREEN_BLEND);
+			ipsBlender.setAligned(alignedValue);
+			lPanel.img=ipsBlender.blend();
+			lPanel.repaint();
+		}
+	});
+    overlayBtn.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			ipsBlender.setMode(IpsBlender.OVERLAY_BLEND);
+			ipsBlender.setAligned(alignedValue);
+			lPanel.img=ipsBlender.blend();
+			lPanel.repaint();
+		}
+	});
+    resetBtn.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			lPanel.img=originalBottom;
+			rPanel.img=originalTop;
+			lPanel.repaint();
+			rPanel.repaint();
+		}
+	});
+    
+    
     }
 
-    protected void blends(int aligned, int mode, float a){
-    	
-    	
-    }
     private int alignedValue;
-    private int modeValue;
+  //  private int modeValue;
     private float opacityValue;
+    protected IpsBlender ipsBlender;
+    protected BufferedImage originalTop;
+    protected BufferedImage originalBottom;
    
 //cc-end
     protected static void equalize() throws Exception {
@@ -592,8 +695,10 @@ public class High5IPS extends JFrame {
 	       
     		try{
     			rPanel.img = lPanel.img;
+    			originalTop=lPanel.img;
     			rPanel.setScale(lPanel.getScale());
     			lPanel.img = ImageIO.read(new File(currentImageFilePath));
+    			originalBottom=lPanel.img;
     		}catch(IOException e){
     			//TODO
     		}
@@ -603,6 +708,9 @@ public class High5IPS extends JFrame {
     		//enable edting menus   		
     		this.repaint();
     		blendToolBar.setVisible(true);
+    		
+    		//setup blender
+    		ipsBlender=new IpsBlender(originalTop, originalBottom, opacityValue, IpsBlender.LINEAR_BLEND, IpsBlender.LEFT_TOP);
     	
     	}
     }
