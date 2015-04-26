@@ -1,49 +1,29 @@
 package ips.high5.cmpt594;
 
-/**
- *This is the main class that controls the application.
- *The Image Processing system allows a user to upload 
- *their own images and edit it them by adding different effects to the images. 
- *@author Team High Five
- */
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.LayoutManager;
-import java.awt.MediaTracker;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageFilter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Stack;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -52,32 +32,120 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.basic.BasicButtonUI;
-import javax.swing.text.html.ImageView;
 
 import com.sun.glass.events.KeyEvent;
 
+
+/**
+ *The main class that controls the application.
+ *The High-5 Image Processing System allows a user to select 
+ *their own images and edit them them by adding different effects to the images.
+ *This is an unfinished Alpha release. 
+ *@author Team High Five
+ *@version 0.1
+ */
 @SuppressWarnings("serial")
 public class High5IPS extends JFrame {
-	// save path for file chooser
+	/**
+	 * Directory file chooser opens in.
+	 */
 	protected File CurrentDirectory = null;
+	
+	/**
+	 * Default title in application title bar.
+	 */
 	static String defaultTitle = "High 5 Image Processing System";
 	
+	/**
+	 * Object that controls blending.
+	 */
+	protected IpsBlender ipsBlender;
+	
+	/**
+	 * Used in blender for how the two images are aligned for blending.
+	 */
+	private int alignedValue;
+	
+	/**
+	 * Used in blender to track opacity.
+	 */
+	private float opacityValue;
+	
+	/**
+	 * Used by blender when user selects Reset.
+	 */
+	protected BufferedImage originalTop;
+	
+	/**
+	 * Used by blender when user selects Reset.
+	 */
+	protected BufferedImage originalBottom;
+
+	// menuitems exposed so they can be dis/enabled
+	JMenuBar menuBar;
+	protected static JMenuItem openAction;
+	protected static JMenuItem saveAction;
+	protected static JMenuItem saveAsAction;
+	protected static JMenuItem recentAction;
+	protected static JMenuItem newMosaicAction;
+	protected static JMenuItem closeAction;
+	protected static JMenuItem propertiesAction;
+	protected static JMenuItem exitAction;
+	protected static JMenuItem undoAction;
+	protected static JMenuItem redoAction;
+	protected static JMenuItem zoominAction;
+	protected static JMenuItem zoomoutAction;
+	protected static JMenuItem zoomFitAction;
+	protected static JMenuItem equalizeAction;
+	protected static JMenuItem makeGSAction;
+	protected static JMenuItem makeRGBAction;
+	protected static JMenuItem houghAction;
+	protected static JMenuItem blendAction;
+	protected static JMenuItem sharpenAction;
+	protected static JMenuItem helpAboutAction;
+	protected static JToolBar blendToolBar;
+	protected static JPopupMenu blendPopup;
+
+	/**
+	 * The image currently being processed and displayed in the left pane.
+	 */
+	protected BufferedImage currentImage;
+
+	/**
+	 * The directory the file chooser opens to.
+	 */
+	protected String currentImageFilePath;
+
+	/**
+	 * Stack of BufferedImage used in undo & redo.
+	 */
+	private static Stack<BufferedImage> undoStack;
+
+	/**
+	 * Stack of BufferedImage used in undo & redo.
+	 */
+	private static Stack<BufferedImage> redoStack;
+
+	/**
+	 * Panel on left holding image being processed.
+	 */
+	protected static IpsImagePanel lPanel;
+
+	/**
+	 * Panel on right holding previous version of image being processed.
+	 */
+	protected static IpsImagePanel rPanel;
+
+
 
 	/**
 	 * The constructor is a top-level class that takes no arguments.
 	 *
 	 * @author Team High Five
 	 * @custom.export N/A
-	 * @custom.import N/A
-	 * @custom.precondition N/A
-	 * @custom.postcondition N/A
-	 * @throws N
-	 *             /A
-	 * @param parameterName
-	 *            parameter description
-	 * @return return description
+	 * @custom.precondition Java Runtime 1.7 installed
+	 * @throws N/A
+	 * @return Returns 0 to OS if no errors
 	 */
 	public High5IPS() {
 		setTitle(defaultTitle);
@@ -86,10 +154,8 @@ public class High5IPS extends JFrame {
 		undoStack = new Stack<BufferedImage>();
 		redoStack = new Stack<BufferedImage>();
 
-		// Creates a menubar for a JFrame
 		menuBar = new JMenuBar();
-				
-		// Add the menubar to the frame
+
 		setJMenuBar(menuBar);
 
 		// Define and add two drop down menu to the menubar
@@ -106,14 +172,19 @@ public class High5IPS extends JFrame {
 		// File Menu
 		openAction = new JMenuItem("Open");
 		openAction.setMnemonic('O');
+		
 		saveAction = new JMenuItem("Save");
 		saveAction.setMnemonic('S');
+		
 		saveAsAction = new JMenuItem("Save as...");
 		saveAsAction.setMnemonic('a');
+		
 		recentAction = new JMenuItem("Recent...");
 		recentAction.setMnemonic('R');
+		
 		newMosaicAction = new JMenuItem("New Mosaic...");
 		newMosaicAction.setMnemonic('M');
+		
 		closeAction = new JMenuItem("Close");
 		closeAction.setMnemonic('C');
 		propertiesAction = new JMenuItem("Properties...");
@@ -135,7 +206,10 @@ public class High5IPS extends JFrame {
 		equalizeAction = new JMenuItem("Equalize");
 		makeGSAction = new JMenuItem("Grayscale");
 		makeRGBAction = new JMenuItem("Color...");
-		houghAction = new JMenuItem("Hough Transform...");// lineDtcAction=new JMenuItem("Line Detection"); edgeDtcAction=new JMenuItem("Edge Detection");
+		houghAction = new JMenuItem("Hough Transform...");// lineDtcAction=new
+															// JMenuItem("Line Detection");
+															// edgeDtcAction=new
+															// JMenuItem("Edge Detection");
 		blendAction = new JMenuItem("Blend with...");
 		sharpenAction = new JMenuItem("Sharpen...");
 
@@ -164,8 +238,8 @@ public class High5IPS extends JFrame {
 		editMenu.add(equalizeAction);
 		editMenu.add(makeGSAction);
 		editMenu.add(makeRGBAction);
-		editMenu.add(houghAction);// houghAction.add(lineDtcAction);houghAction.add(edgeDtcAction);
-        editMenu.add(sharpenAction);
+		editMenu.add(houghAction);
+		editMenu.add(sharpenAction);
 		editMenu.add(blendAction);
 
 		// Help Actions
@@ -192,11 +266,11 @@ public class High5IPS extends JFrame {
 					undoAction.setEnabled(false);
 				} else
 					rPanel.img = undoStack.pop();
-				
-				//for blendWith
+
+				// for blendWith
 				originalBottom = lPanel.img;
 				originalTop = rPanel.img;
-				
+
 				lPanel.repaint();
 				rPanel.repaint();
 			}
@@ -212,11 +286,11 @@ public class High5IPS extends JFrame {
 				lPanel.img = redoStack.pop();
 				if (redoStack.isEmpty())
 					redoAction.setEnabled(false);
-				
-				//for blendWith
+
+				// for blendWith
 				originalBottom = lPanel.img;
 				originalTop = rPanel.img;
-				
+
 				lPanel.repaint();
 				rPanel.repaint();
 			}
@@ -293,7 +367,6 @@ public class High5IPS extends JFrame {
 				try {
 					equalize();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -311,7 +384,6 @@ public class High5IPS extends JFrame {
 				try {
 					rPanel.setScale(lPanel.getScale());
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -339,12 +411,13 @@ public class High5IPS extends JFrame {
 		// Hough method
 		houghAction.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//JOptionPane.showMessageDialog(null, "Probably should be some sort of dialog box here for Hough options...");
-				BufferedImage eImage=new IpsFeatureDetector().detectEdges(lPanel.img);
+				// JOptionPane.showMessageDialog(null,
+				// "Probably should be some sort of dialog box here for Hough options...");
+				BufferedImage eImage = new IpsFeatureDetector().detectEdges(lPanel.img);
 				undoStack.push(rPanel.img);
 				undoAction.setEnabled(true);
-				rPanel.img=lPanel.img;
-				lPanel.img=eImage;
+				rPanel.img = lPanel.img;
+				lPanel.img = eImage;
 				rPanel.repaint();
 				lPanel.repaint();
 			}
@@ -402,28 +475,10 @@ public class High5IPS extends JFrame {
 		// opacity setting
 		JSlider slider = new JSlider(0, 100);
 
-		// Dimension d=slider.getPreferredSize();
-		// slider.setPreferredSize(new Dimension((int)d.getWidth()/2,
-		// (int)d.getHeight()));
-		//slider.setSize(new Dimension(100, 20));
-		//slider.setPreferredSize(new Dimension(50, 20));
-		// System.out.println(slider.getWidth());
 		slider.setMajorTickSpacing(10);
 		slider.setMinorTickSpacing(5);
-		// slider.setLayout(new GridLayout(2,1));
-		// slider.setSnapToTicks(true);
 		slider.setPaintLabels(true);
-		//
-		/*
-		 * JPanel sliderPanel=new JPanel(); GridBagConstraints gbc_sliderPanel =
-		 * new GridBagConstraints(); gbc_sliderPanel.gridx=0;
-		 * gbc_sliderPanel.gridy=0; gbc_sliderPanel.weightx=50;
-		 * gbc_sliderPanel.weighty=20; gbc_sliderPanel.fill =
-		 * GridBagConstraints.BOTH; GridBagLayout.setConstraints(sliderPanel,
-		 * gbc_sliderPanel); sliderPanel.setPreferredSize(new Dimension(50,20));
-		 * sliderPanel.add(slider);
-		 */
-
+		
 		// blending option buttons
 		JButton linearBtn = new JButton("Linear");
 		JButton multiplyBtn = new JButton("Multiply");
@@ -431,7 +486,7 @@ public class High5IPS extends JFrame {
 		JButton overlayBtn = new JButton("Overlay");
 
 		JButton resetBtn = new JButton("Reset");
-		
+
 		JButton swapBtn = new JButton("Swap");
 
 		linearBtn.setToolTipText("Linear Blending");
@@ -443,7 +498,6 @@ public class High5IPS extends JFrame {
 		swapBtn.setToolTipText("swap left and right");
 
 		// add buttons to toolbar
-
 		blendToolBar = new JToolBar("Blend Tool Kit");
 		blendToolBar.addSeparator();
 		blendToolBar.setFloatable(true);
@@ -454,7 +508,7 @@ public class High5IPS extends JFrame {
 		blendToolBar.add(centerAligned);
 
 		blendToolBar.add(slider);
-		
+
 		blendToolBar.add(linearBtn);
 		blendToolBar.add(multiplyBtn);
 		blendToolBar.add(screenBtn);
@@ -464,8 +518,8 @@ public class High5IPS extends JFrame {
 
 		blendPopup = new JPopupMenu();
 		blendPopup.add(blendToolBar);
-		blendPopup.addPopupMenuListener(new PopupMenuListener(){
-			
+		blendPopup.addPopupMenuListener(new PopupMenuListener() {
+
 			@Override
 			public void popupMenuCanceled(PopupMenuEvent arg0) {
 				System.out.println("canceled");
@@ -484,12 +538,11 @@ public class High5IPS extends JFrame {
 				menuBar.setEnabled(false);
 			}
 		});
-		
+
 		topLeftAligned.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				alignedValue = IpsBlender.LEFT_TOP;
 			}
 		});
@@ -498,7 +551,6 @@ public class High5IPS extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				alignedValue = IpsBlender.RIGHT_TOP;
 			}
 		});
@@ -507,7 +559,6 @@ public class High5IPS extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				alignedValue = IpsBlender.LEFT_BOTTOM;
 			}
 		});
@@ -516,7 +567,6 @@ public class High5IPS extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				alignedValue = IpsBlender.RIGHT_BOTTOM;
 			}
 		});
@@ -528,8 +578,7 @@ public class High5IPS extends JFrame {
 				alignedValue = IpsBlender.CENTER;
 			}
 		});
-		// sent up aligned: end
-
+		
 		slider.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -581,7 +630,7 @@ public class High5IPS extends JFrame {
 				lPanel.repaint();
 			}
 		});
-		
+
 		resetBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -600,11 +649,11 @@ public class High5IPS extends JFrame {
 				BufferedImage temp = rPanel.img;
 				rPanel.img = lPanel.img;
 				lPanel.img = temp;
-				
+
 				temp = originalBottom;
 				originalBottom = originalTop;
 				originalTop = temp;
-				
+
 				lPanel.repaint();
 				rPanel.repaint();
 			}
@@ -612,17 +661,12 @@ public class High5IPS extends JFrame {
 
 	}
 
-	private int alignedValue;
-	// private int modeValue;
-	private float opacityValue;
-	protected IpsBlender ipsBlender;
-	protected BufferedImage originalTop;
-	protected BufferedImage originalBottom;
-
-	// cc-end
+	/**
+	 * Performs Histogram Equalization on currentImage.
+	 * @throws Exception
+	 */
 	protected static void equalize() throws Exception {
 		IpsEqualizer eq = new IpsEqualizer();
-		// BufferedImage eqImg = eq.equalize(lPanel.img);
 		BufferedImage eqImg = eq.histogramEqualize(lPanel.img);
 		if (rPanel.img != null)
 			undoStack.push(rPanel.img);
@@ -634,104 +678,15 @@ public class High5IPS extends JFrame {
 		lPanel.repaint();
 	}
 
-	// menuitems exposed so they can be dis/enabled
-	JMenuBar menuBar;
-	protected static JMenuItem openAction;
-	protected static JMenuItem saveAction;
-	protected static JMenuItem saveAsAction;
-	protected static JMenuItem recentAction;
-	protected static JMenuItem newMosaicAction;
-	protected static JMenuItem closeAction;
-	protected static JMenuItem propertiesAction;
-	protected static JMenuItem exitAction;
-	protected static JMenuItem undoAction;
-	protected static JMenuItem redoAction;
-	protected static JMenuItem zoominAction;
-	protected static JMenuItem zoomoutAction;
-	protected static JMenuItem zoomFitAction;
-	protected static JMenuItem equalizeAction;
-	protected static JMenuItem makeGSAction;
-	protected static JMenuItem makeRGBAction;
-	protected static JMenuItem houghAction;
-	protected static JMenuItem blendAction;
-	protected static JMenuItem sharpenAction;
-	protected static JMenuItem helpAboutAction;
-	// protected static JMenuItem featureDetect;
-	
-	protected static JToolBar blendToolBar;
-	protected static JPopupMenu blendPopup;
-	// protected static JMenuItem lineDtcAction;
-	//  protected static JMenuItem edgeDtcAction;
 	/**
-	 * One-sentence description ending with a period - one and only one period
-	 * in description. Additional description information - as many lines as
-	 * needed HTML tags OK
-	 *
-	 * @author Team High Five
-	 * @author additional author, one line for each
-	 * @custom.export N/A
-	 * @custom.import N/A
-	 * @custom.precondition N/A
-	 * @custom.postcondition N/A
-	 * @throws
-	 * @param parameterName
-	 *            parameter description
-	 * @return return description
-	 */
-	protected BufferedImage currentImage;
-
-	/**
-	 * One-sentence description ending with a period - one and only one period
-	 * in description. Additional description information - as many lines as
-	 * needed HTML tags OK
-	 *
-	 * @author Team High Five
-	 * @author additional author, one line for each
-	 * @custom.export N/A
-	 * @custom.import N/A
-	 * @custom.precondition N/A
-	 * @custom.postcondition N/A
-	 * @throws
-	 * @param parameterName
-	 *            parameter description
-	 * @return return description
-	 */
-	protected String currentImageFilePath;
-
-	/**
-	 * One-sentence description ending with a period - one and only one period
-	 * in description. Additional description information - as many lines as
-	 * needed HTML tags OK
-	 *
-	 * @author Team High Five
-	 * @author additional author, one line for each
-	 * @custom.export N/A
-	 * @custom.import N/A
-	 * @custom.precondition N/A
-	 * @custom.postcondition N/A
-	 * @throws
-	 * @param parameterName
-	 *            parameter description
-	 * @return return description
-	 */
-	private static Stack<BufferedImage> undoStack;
-
-	private static Stack<BufferedImage> redoStack;
-
-	protected static IpsImagePanel lPanel;
-
-	protected static IpsImagePanel rPanel;
-
-	/**
-	 * @return If successful, places path in current path and create
-	 *         currentImage
+	 * Places path in currentPath and loads currentImage from file selected by user.
 	 */
 	protected void openFile() {
 		// Create a file chooser
 
 		final JFileChooser fc = new IpsFileChooser(this.CurrentDirectory);
 		File newFile;
-		
+
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			currentImageFilePath = fc.getSelectedFile().getPath();
@@ -743,14 +698,14 @@ public class High5IPS extends JFrame {
 				lPanel.resetScale();
 				rPanel.img = null;
 				rPanel.resetScale();
-				this.setTitle(defaultTitle+" - "+newFile.getName());
+				this.setTitle(defaultTitle + " - " + newFile.getName());
 				this.CurrentDirectory = fc.getCurrentDirectory();
 				undoStack.clear();
 				redoStack.clear();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			currentImage = lPanel.img;
 			originalTop = lPanel.img;
 
@@ -769,11 +724,15 @@ public class High5IPS extends JFrame {
 		}
 	}
 
+	/**
+	 * Allows user to select an image in a file and blend with currentImage.
+	 * @throws Exception
+	 */
 	protected void blendWith() throws Exception {
 		// Open a second image to blend
 
 		final JFileChooser fc = new IpsFileChooser(this.CurrentDirectory);
-		
+
 		// In response to a button click:
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -781,8 +740,8 @@ public class High5IPS extends JFrame {
 			System.out.println("You chose to open this file: " + currentImageFilePath);
 
 			try {
-				blendPopup.show(this,100,100);
-				if(rPanel.img != null)
+				blendPopup.show(this, 100, 100);
+				if (rPanel.img != null)
 					undoStack.push(rPanel.img);
 				rPanel.img = lPanel.img;
 				undoAction.setEnabled(true);
@@ -809,7 +768,7 @@ public class High5IPS extends JFrame {
 	}
 
 	/**
-	 * Initializes menu item visibility, called at start and file|close
+	 * Initializes menu item visibility, called at start and file|close.
 	 */
 	private static void initializeMenuVisibility() {
 		closeAction.setEnabled(false);
@@ -831,42 +790,43 @@ public class High5IPS extends JFrame {
 	}
 
 	/**
-	 * @return
+	 * Allows user to save currentImage (unimplemented).
 	 */
 	protected void saveFile() {
 		// TODO implement here
 	}
 
 	/**
-	 * @return
+	 * Allows user to save currentImage with a different name or type (unimplemented).
 	 */
 	protected void saveFileAs() {
 		// TODO implement here
 	}
 
 	/**
-	 * @return
+	 * Allows user to open an image file that was opened recently (unimplemented).
 	 */
 	protected void openRecentFile() {
 		// TODO implement here
 	}
 
 	/**
-	 * @return
+	 * Display properties of currentImage (Unimplemented).
 	 */
 	protected void showProperties() {
 		// TODO implement here
 	}
 
 	/**
-	 * @return
+	 * Allows user to stitch images together where their edges match (unimplemented).
 	 */
 	protected void newMosaic() {
 		// TODO implement here
 	}
 
 	/**
-	 * @return
+	 * Closes all current images, clears the undo & redo stacks, resets menus
+	 * to initial state.
 	 */
 	protected void closeFile() {
 		rPanel.img = null;
@@ -882,14 +842,9 @@ public class High5IPS extends JFrame {
 	}
 
 	/**
-	 * @return
+	 * Main method for application.
+	 * @param args None
 	 */
-	protected void exitApplication() {
-		// TODO implement here
-	}
-
-	// CC
-
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
