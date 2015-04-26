@@ -1,76 +1,25 @@
 package ips.high5.cmpt594;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-import java.util.Vector;
 
 /**
- *The description
- *of the class
+ * Modifies an image so that the edges are enhanced.
+ * @author Cuicui Ruan - Team High 5
  */
 public class  IpsFeatureDetector {
 
-    /**
-     *One-sentence description ending with a period - one and only one period in description.
-		 *Additional description information - as many lines as needed HTML tags OK
-		 *@author Team High Five
-		 *@author additional author, one line for each
-		 *@custom.export N/A
-		 *@custom.import N/A
-		 *@custom.precondition N/A
-		 *@custom.postcondition N/A
-		 *@throws 
-		 *@param parameterName parameter description
-		 *@return return description
-		 */
     public IpsFeatureDetector() {
     }
 
-        /**
-     *One-sentence description ending with a period - one and only one period in description.
-		 *Additional description information - as many lines as needed HTML tags OK
-		 *@author Team High Five
-		 *@author additional author, one line for each
-		 *@custom.export N/A
-		 *@custom.import N/A
-		 *@custom.precondition N/A
-		 *@custom.postcondition N/A
-		 *@throws 
-		 *@param parameterName parameter description
-		 *@return return description
-		 */
-    public IpsBinaryImage featuresImage;
-
-
-	/**
-     * @return
-     */
-    public void detectLines(BufferedImage src) {
-        // TODO implement here
-        //BufferedImage dest=this.binaryImage(src);
-        
-        /*HoughTransform(src.getWidth(), src.getHeight()); 
-        
-        // add the points from the image (or call the addPoint method separately if your points are not in an image 
-        addPoints(src); 
- 
-        // get the lines out 
-        Vector<HoughLine> lines = getLines(30); 
- 
-        // draw the lines back onto the image 
-        for (int j = 0; j < lines.size(); j++) { 
-            HoughLine line = lines.elementAt(j); 
-            line.draw(src, Color.RED.getRGB()); 
-        } 
-        //return dest;
-*/    }
+ 	public void detectLines(BufferedImage src) {
+    }
     
-    
-
     /**
-     * @return
+     * Detects and enhances edges in a BufferedImage.
+     * @param src BufferedImage to be processed
+     * @return BGR BufferedImage with enhanced edes
      */
     public BufferedImage detectEdges(BufferedImage src) {
         // TODO implement here
@@ -84,7 +33,11 @@ public class  IpsFeatureDetector {
     }
     
     
-
+    /**
+     * Converts any BufferedImage to a grayscale type BufferedImage
+     * @param src Any BufferedImage
+     * @return Grayscale type BufferedImage
+     */
     public BufferedImage greyImage(BufferedImage src)
     {
     	BufferedImage dest=new BufferedImage(src.getWidth(), src.getHeight(),BufferedImage.TYPE_BYTE_GRAY);
@@ -97,6 +50,11 @@ public class  IpsFeatureDetector {
     	return dest;
     }
     
+    /**
+     * Converts any BufferedImage to a binary type BufferedImage.
+     * @param src any BufferedImage
+     * @return binary type BufferedImage
+     */
     public BufferedImage binaryImage(BufferedImage src)
     {
     	BufferedImage dest=new BufferedImage(src.getWidth(),src.getHeight(),BufferedImage.TYPE_BYTE_BINARY);

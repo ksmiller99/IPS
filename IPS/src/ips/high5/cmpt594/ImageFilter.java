@@ -33,8 +33,7 @@ package ips.high5.cmpt594;
 
 import java.io.File;
 
-import javax.swing.*;
-import javax.swing.filechooser.*;
+import javax.swing.filechooser.FileFilter;
 
 
 /* ImageFilter.java is used by FileChooserDemo2.java. */

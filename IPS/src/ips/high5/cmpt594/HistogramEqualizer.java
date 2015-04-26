@@ -3,9 +3,7 @@
  */
 package ips.high5.cmpt594;
 
-import java.net.*;
-import java.awt.image.*;
-import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * HistogramEqualizer.java
@@ -132,7 +130,7 @@ public class HistogramEqualizer {
 				   double[] equalizedHistogram) {
         short[][] data = new short[rows][cols];
 
-        double	s = 0;
+        //double	s = 0;
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 //s += normalizedHistogram[inputGreyImageData[y][x]];

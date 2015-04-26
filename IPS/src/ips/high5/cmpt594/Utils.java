@@ -36,7 +36,10 @@ package ips.high5.cmpt594;
 import java.io.File;
 import javax.swing.ImageIcon;
  
-/* Utils.java is used by FileChooserDemo2.java. */
+/**
+ *  Utils.java is used by FileChooserDemo2.java. 
+ * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
+ */
 public class Utils {
     public final static String jpeg = "jpeg";
     public final static String jpg = "jpg";

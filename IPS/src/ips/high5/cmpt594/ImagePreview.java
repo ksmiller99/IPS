@@ -32,6 +32,7 @@ package ips.high5.cmpt594;
  */
  
 import javax.swing.*;
+
 import java.beans.*;
 import java.awt.*;
 import java.io.File;
@@ -40,6 +41,7 @@ import java.io.File;
 /**
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  */
+@SuppressWarnings("serial")
 public class ImagePreview extends JComponent
                           implements PropertyChangeListener {
     ImageIcon thumbnail = null;

@@ -1,77 +1,29 @@
 package ips.high5.cmpt594;
 
-import java.awt.BorderLayout;
 import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.util.Arrays;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JPopupMenu;
-import javax.swing.JSlider;
-import javax.swing.JToolBar;
-
-import com.sun.webkit.PopupMenu;
 
 /**
- * The description of the class
+ * Blends two images together based on setting selected by the user
+ * @author Cuicui Ruan - Team High 5
  */
 public class IpsBlender implements java.awt.image.BufferedImageOp {
 
 	/**
-	 * One-sentence description ending with a period - one and only one period
-	 * in description. Additional description information - as many lines as
-	 * needed HTML tags OK
-	 *
-	 * @author Team High Five
-	 * @author additional author, one line for each
-	 * @custom.export N/A
-	 * @custom.import N/A
-	 * @custom.precondition N/A
-	 * @custom.postcondition N/A
-	 * @throws
-	 * @param parameterName
-	 *            parameter description
-	 * @return return description
+	 * One of the two images being blended.
 	 */
 	private BufferedImage topImage;
 
 	/**
-	 * One-sentence description ending with a period - one and only one period
-	 * in description. Additional description information - as many lines as
-	 * needed HTML tags OK
-	 *
-	 * @author Team High Five
-	 * @author additional author, one line for each
-	 * @custom.export N/A
-	 * @custom.import N/A
-	 * @custom.precondition N/A
-	 * @custom.postcondition N/A
-	 * @throws
-	 * @param parameterName
-	 *            parameter description
-	 * @return return description
+	 * The other image being blended.
 	 */
 	private BufferedImage bottomImage;
 
 	/**
-	 * One-sentence description ending with a period - one and only one period
-	 * in description. Additional description information - as many lines as
-	 * needed HTML tags OK
-	 *
-	 * @author Team High Five
-	 * @author additional author, one line for each
-	 * @custom.export N/A
-	 * @custom.import N/A
-	 * @custom.precondition N/A
-	 * @custom.postcondition N/A
-	 * @throws
-	 * @param parameterName
-	 *            parameter description
-	 * @return return description
+	 * The opacity of the top image.
 	 */
 	private float opacity;
 
@@ -89,8 +41,6 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 	private int mode;
 	private int aligned;
 
-	private JPopupMenu blendMenu;
-	
 	public IpsBlender(BufferedImage topImage, BufferedImage bottomImage, float opacity, int mode, int aligned) {
 		super();
 		this.topImage = topImage;
@@ -141,40 +91,47 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 		this.aligned = aligned;
 	}
 
-	/**
-	 * @return
-	 */
-	/*
-	 * public void imageExchage() { // TODO implement here BufferedImage temp;
-	 * temp=topImage; topImage=bottomImage; bottomImage=temp; }
-	 */
-
-	/**
-	 * @return
-	 */
-
+	
 	// linear blend mode
+	/**
+	 * Describe what the method does
+	 * @param x
+	 * @param y
+	 * @param a
+	 * @return
+	 */
 	private int linearBlendMode(int x, int y, float a) {
 		return (int) (a * x + (1 - a) * y);
 
 	}
 
-	// dissolve blend mode
-	/*
-	 * private int dissolveBlendMode(int x, int y) { return y;
-	 * 
-	 * }
-	 */
-
 	// Multiply Mode
+	/**
+	 * Describe what the method does
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	private int multiplyBlendMode(int x, int y) {
 		return x * y / 255;
 	}
 
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	private int screenBlendMode(int x, int y) {
 		return 255 - (255 - x) * (255 - y) / 255;
 	}
 
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	private int overlayBlendMode(int x, int y) {
 		if (y <= 127)
 			return 2 * x * y / 255;
@@ -182,6 +139,16 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 			return 255 - 2 * (255 - x) * (255 - y) / 255;
 	}
 
+	/**
+	 * 
+	 * @param tr1
+	 * @param tg1
+	 * @param tb1
+	 * @param input
+	 * @param row
+	 * @param col
+	 * @return
+	 */
 	private int[] getBlendData(int tr1, int tg1, int tb1, int[] input, int row, int col) {
 		int[] topXY = new int[4];
 		int[] bottomXY = new int[4];
@@ -229,6 +196,12 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 		return rgb;
 	}
 
+	/**
+	 * Returns the minimum value x & y.
+	 * @param x One integer
+	 * @param y The other integer
+	 * @return
+	 */
 	public int getMinInt(int x, int y) {
 		if (x <= y)
 			return x;
@@ -236,6 +209,10 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 			return y;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public int[][] getStarEnd() {
 		// index 0,1: startX, startY
 		// index 2,3: endX, endY
@@ -329,9 +306,12 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public BufferedImage blend() {
-		// TODO implement here
-
+		
 		int[] topXY = new int[4];
 		int[] bottomXY = new int[4];
 		int[][] returnV = new int[2][4];

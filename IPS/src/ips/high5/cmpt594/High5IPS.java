@@ -141,11 +141,9 @@ public class High5IPS extends JFrame {
 	/**
 	 * The constructor is a top-level class that takes no arguments.
 	 *
-	 * @author Team High Five
 	 * @custom.export N/A
 	 * @custom.precondition Java Runtime 1.7 installed
 	 * @throws N/A
-	 * @return Returns 0 to OS if no errors
 	 */
 	public High5IPS() {
 		setTitle(defaultTitle);

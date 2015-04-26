@@ -6,18 +6,18 @@ package ips.high5.cmpt594;
 import java.io.File;
 
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- * @author Kevin
+ * Allows user to select an image file from the host file system.
+ * Saves the directory in main application's currentDirectory.
+ * @author Team High 5
  *
  */
+@SuppressWarnings("serial")
 public class IpsFileChooser extends JFileChooser{
 	
 	IpsFileChooser(File dir){
-		this.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
-    	this.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        this.setAcceptAllFileFilterUsed(false);
+		this.setAcceptAllFileFilterUsed(false);
         this.addChoosableFileFilter(new ImageFilter());
         this.setFileView(new ImageFileView());
         this.setAccessory(new ImagePreview(this));
