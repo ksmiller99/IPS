@@ -62,6 +62,8 @@ import com.sun.glass.events.KeyEvent;
 public class High5IPS extends JFrame {
 	// save path for file chooser
 	protected File CurrentDirectory = null;
+	static String defaultTitle = "High 5 Image Processing System";
+	
 
 	/**
 	 * The constructor is a top-level class that takes no arguments.
@@ -78,7 +80,7 @@ public class High5IPS extends JFrame {
 	 * @return return description
 	 */
 	public High5IPS() {
-		setTitle("High 5 Image Processing System");
+		setTitle(defaultTitle);
 
 		// initialize
 		undoStack = new Stack<BufferedImage>();
@@ -295,7 +297,6 @@ public class High5IPS extends JFrame {
 				undoAction.setEnabled(true);
 
 				// copy left panel to the right side
-				rPanel.img = lPanel.img;
 				try {
 					rPanel.setScale(lPanel.getScale());
 				} catch (Exception e) {
@@ -308,6 +309,9 @@ public class High5IPS extends JFrame {
 				Graphics g = gsImg.getGraphics();
 				g.drawImage(lPanel.img, 0, 0, null);
 				g.dispose();
+				undoStack.push(rPanel.img);
+				undoAction.setEnabled(true);
+				rPanel.img = lPanel.img;
 				lPanel.img = gsImg;
 				rPanel.repaint();
 				lPanel.repaint();
@@ -714,20 +718,25 @@ public class High5IPS extends JFrame {
 		// Create a file chooser
 
 		final JFileChooser fc = new IpsFileChooser(this.CurrentDirectory);
-
+		File newFile;
+		
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			currentImageFilePath = fc.getSelectedFile().getPath();
 			System.out.println("You chose to open this file: " + currentImageFilePath);
 
 			try {
-				lPanel.img = ImageIO.read(new File(currentImageFilePath));
+				newFile = new File(currentImageFilePath);
+				lPanel.img = ImageIO.read(newFile);
 				rPanel.img = null;
+				this.setTitle(defaultTitle+" - "+newFile.getName());
+				this.CurrentDirectory = fc.getCurrentDirectory();
+				undoStack.clear();
+				redoStack.clear();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.CurrentDirectory = fc.getCurrentDirectory();
-
+			
 			currentImage = lPanel.img;
 			originalTop = lPanel.img;
 
@@ -841,12 +850,15 @@ public class High5IPS extends JFrame {
 	/**
 	 * @return
 	 */
-	protected static void closeFile() {
+	protected void closeFile() {
 		rPanel.img = null;
 		lPanel.img = null;
 		rPanel.repaint();
 		lPanel.repaint();
+		undoStack.clear();
+		redoStack.clear();
 		initializeMenuVisibility();
+		this.setTitle(defaultTitle);
 	}
 
 	/**
