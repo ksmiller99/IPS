@@ -19,12 +19,11 @@ public class  IpsFeatureDetector {
     /**
      * Detects and enhances edges in a BufferedImage.
      * @param src BufferedImage to be processed
-     * @return BGR BufferedImage with enhanced edes
+     * @return BGR BufferedImage with enhanced edges
      */
     public BufferedImage detectEdges(BufferedImage src) {
         // TODO implement here
     	BufferedImage dest=new BufferedImage(src.getWidth(),src.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
-        // GaussLaplacian
     	float[] data={0.0f, -0.75f, 0.0f, -0.75f, 3.0f, -0.75f, 0.0f, -0.75f, 0.0f };
     	Kernel kernel=new Kernel(3,3,data);
         ConvolveOp co=new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,null);

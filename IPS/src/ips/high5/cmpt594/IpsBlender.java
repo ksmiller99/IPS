@@ -94,11 +94,11 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 	
 	// linear blend mode
 	/**
-	 * Describe what the method does
-	 * @param x
-	 * @param y
-	 * @param a
-	 * @return
+	 * linear blend mode on one pixel
+	 * @param x pixel value of topImage
+	 * @param y pixel value of bottomImage
+	 * @param a opacity value of topImage
+	 * @return pixel value after linear blending
 	 */
 	private int linearBlendMode(int x, int y, float a) {
 		return (int) (a * x + (1 - a) * y);
@@ -107,30 +107,30 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 
 	// Multiply Mode
 	/**
-	 * Describe what the method does
-	 * @param x
-	 * @param y
-	 * @return
+	 * Multiply blend mode on one pixel
+	 * @param x pixel value of topImage
+	 * @param y pixel value of bottomImage
+	 * @return one pixel value after Multiply blending
 	 */
 	private int multiplyBlendMode(int x, int y) {
 		return x * y / 255;
 	}
 
 	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
+	 * Screen blend mode on one pixel
+	 * @param x pixel value of topImage
+	 * @param y pixel value of bottomImage
+	 * @return one pixel value after Multiply blending
 	 */
 	private int screenBlendMode(int x, int y) {
 		return 255 - (255 - x) * (255 - y) / 255;
 	}
 
 	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
+	 * Overlay Blend Mode
+	 * @param x pixel value of top Image
+	 * @param y pixel value of bottom Image
+	 * @return one pixel value after Overlay blending
 	 */
 	private int overlayBlendMode(int x, int y) {
 		if (y <= 127)
@@ -140,14 +140,14 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 	}
 
 	/**
-	 * 
-	 * @param tr1
-	 * @param tg1
-	 * @param tb1
-	 * @param input
-	 * @param row
-	 * @param col
-	 * @return
+	 * calculate the R G B value after blending at the position of (row, col)
+	 * @param tr1 R value of one pixel on topImage
+	 * @param tg1 G value of one pixel on topImage
+	 * @param tb1 B value of one pixel on topImage
+	 * @param input pixels values of bottomImage
+	 * @param row the row of the pixel to be blended on the overlap area
+	 * @param col the column of the pixel to be blended on the overlap area
+	 * @return the result R G B value after blending
 	 */
 	private int[] getBlendData(int tr1, int tg1, int tb1, int[] input, int row, int col) {
 		int[] topXY = new int[4];
@@ -196,11 +196,11 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 		return rgb;
 	}
 
-	/**
-	 * Returns the minimum value x & y.
+	/** 
+	 * Prepare for the calculate the overlapped area
 	 * @param x One integer
 	 * @param y The other integer
-	 * @return
+	 * @return Returns the minimum value x & y.
 	 */
 	public int getMinInt(int x, int y) {
 		if (x <= y)
@@ -210,8 +210,8 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Get the overlapped area on topImage and bottomImage
+	 * @return 2* 4 array, including the startX,Y and endX,Y for topImage and bottomImage. Row 1 is startX,Y and endX,y for bottomImage.
 	 */
 	public int[][] getStarEnd() {
 		// index 0,1: startX, startY
@@ -296,7 +296,6 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 
 		}
 		int[][] returnV = new int[2][4];
-		// for(int i=0;i<2;i++)
 		for (int j = 0; j < 4; j++) {
 			returnV[0][j] = top[j];
 			returnV[1][j] = bottom[j];
@@ -307,8 +306,8 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Start blending on overlapped area 
+	 * @return blended image
 	 */
 	public BufferedImage blend() {
 		

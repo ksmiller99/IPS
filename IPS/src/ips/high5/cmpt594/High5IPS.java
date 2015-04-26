@@ -455,7 +455,6 @@ public class High5IPS extends JFrame {
 			}
 		});
 
-		// cc-start
 
 		// set aligned method buttons
 		JButton topLeftAligned = new JButton(new ImageIcon("images/LEFT_TOP.png"));
