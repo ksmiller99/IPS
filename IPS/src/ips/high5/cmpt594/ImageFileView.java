@@ -37,6 +37,11 @@ import javax.swing.*;
 import javax.swing.filechooser.*;
  
 /* ImageFileView.java is used by FileChooserDemo2.java. */
+/**
+ * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
+ * @author Oracle
+ *
+ */
 public class ImageFileView extends FileView {
 	//not sure why this does not work KSM
 	ImageIcon jpgIcon = Utils.createImageIcon("images/jpgIcon.gif");

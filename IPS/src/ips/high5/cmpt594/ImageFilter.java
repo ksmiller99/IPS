@@ -38,6 +38,9 @@ import javax.swing.filechooser.*;
 
 
 /* ImageFilter.java is used by FileChooserDemo2.java. */
+/**
+ * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
+ */
 public class ImageFilter extends FileFilter {
 
     //Accept all directories and all gif, jpg, tiff, or png files.

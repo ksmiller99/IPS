@@ -37,6 +37,9 @@ import java.awt.*;
 import java.io.File;
  
 /* ImagePreview.java by FileChooserDemo2.java. */
+/**
+ * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
+ */
 public class ImagePreview extends JComponent
                           implements PropertyChangeListener {
     ImageIcon thumbnail = null;

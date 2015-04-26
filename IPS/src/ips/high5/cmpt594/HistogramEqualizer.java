@@ -7,14 +7,12 @@ import java.net.*;
 import java.awt.image.*;
 import java.awt.*;
 
-/*
+/**
  * HistogramEqualizer.java
  *
  * Created on 01/05/2004, 11:51pm
  * The algorithm and code are based on the "imageprocessing" package of "Java Image Processing API version 1"
- */
-
-/** This is the class of the program
+ * This is the class of the program
  * @author ouyang
  */
 public class HistogramEqualizer {
