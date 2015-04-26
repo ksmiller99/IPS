@@ -41,6 +41,14 @@ public class IpsBlender implements java.awt.image.BufferedImageOp {
 	private int mode;
 	private int aligned;
 
+	/**
+	 * Construct Blender method
+	 * @param topImage top image to be blended
+	 * @param bottomImage bottom image to be blended
+	 * @param opacity opacity of top image in linear blending
+	 * @param mode blend mode
+	 * @param aligned alignment method
+	 */
 	public IpsBlender(BufferedImage topImage, BufferedImage bottomImage, float opacity, int mode, int aligned) {
 		super();
 		this.topImage = topImage;
