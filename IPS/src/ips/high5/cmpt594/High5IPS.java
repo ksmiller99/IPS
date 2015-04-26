@@ -188,9 +188,15 @@ public class High5IPS extends JFrame {
 				lPanel.img = rPanel.img;
 				if (undoStack.isEmpty()) {
 					rPanel.img = null;
+					rPanel.resetScale();
 					undoAction.setEnabled(false);
 				} else
 					rPanel.img = undoStack.pop();
+				
+				//for blendWith
+				originalBottom = lPanel.img;
+				originalTop = rPanel.img;
+				
 				lPanel.repaint();
 				rPanel.repaint();
 			}
@@ -206,6 +212,11 @@ public class High5IPS extends JFrame {
 				lPanel.img = redoStack.pop();
 				if (redoStack.isEmpty())
 					redoAction.setEnabled(false);
+				
+				//for blendWith
+				originalBottom = lPanel.img;
+				originalTop = rPanel.img;
+				
 				lPanel.repaint();
 				rPanel.repaint();
 			}
@@ -358,12 +369,9 @@ public class High5IPS extends JFrame {
 		// Blend method
 		blendAction.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// JOptionPane.showMessageDialog(null,
-				// "Single File Picker will be here.");
 				try {
 					blendWith();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -423,6 +431,8 @@ public class High5IPS extends JFrame {
 		JButton overlayBtn = new JButton("Overlay");
 
 		JButton resetBtn = new JButton("Reset");
+		
+		JButton swapBtn = new JButton("Swap");
 
 		linearBtn.setToolTipText("Linear Blending");
 		multiplyBtn.setToolTipText("Multiply Blending");
@@ -430,6 +440,7 @@ public class High5IPS extends JFrame {
 		overlayBtn.setToolTipText("Overlay Blending");
 
 		resetBtn.setToolTipText("Reset");
+		swapBtn.setToolTipText("swap left and right");
 
 		// add buttons to toolbar
 
@@ -443,17 +454,14 @@ public class High5IPS extends JFrame {
 		blendToolBar.add(centerAligned);
 
 		blendToolBar.add(slider);
-		// blendToolBar.add(sliderPanel);
-
+		
 		blendToolBar.add(linearBtn);
 		blendToolBar.add(multiplyBtn);
 		blendToolBar.add(screenBtn);
 		blendToolBar.add(overlayBtn);
 		blendToolBar.add(resetBtn);
+		blendToolBar.add(swapBtn);
 
-		// setJMenuBar(blendMenuBar,);
-		// JPanel p=new JPanel();
-		//menuBar.add(blendToolBar, BorderLayout.NORTH);
 		blendPopup = new JPopupMenu();
 		blendPopup.add(blendToolBar);
 		blendPopup.addPopupMenuListener(new PopupMenuListener(){
@@ -477,13 +485,6 @@ public class High5IPS extends JFrame {
 			}
 		});
 		
-		// blendToolBar.setVisible(false);
-		// blendToolBar.setEnabled(false);
-		// alignedValue=IpsBlender.CENTER;
-		// modeValue=IpsBlender.LINEAR_BLEND;
-		// opacityValue=1;
-
-		// set up aligned:start
 		topLeftAligned.addActionListener(new ActionListener() {
 
 			@Override
@@ -524,7 +525,6 @@ public class High5IPS extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				alignedValue = IpsBlender.CENTER;
 			}
 		});
@@ -534,7 +534,6 @@ public class High5IPS extends JFrame {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				// TODO Auto-generated method stub
 				opacityValue = ((float) slider.getValue()) / 100;
 				// System.out.println(opacityValue);
 
@@ -545,7 +544,6 @@ public class High5IPS extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				ipsBlender.setMode(IpsBlender.LINEAR_BLEND);
 				ipsBlender.setOpacity(opacityValue);
 				ipsBlender.setAligned(alignedValue);
@@ -557,7 +555,6 @@ public class High5IPS extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				ipsBlender.setMode(IpsBlender.MULTIPLY_BLEND);
 				ipsBlender.setAligned(alignedValue);
 				lPanel.img = ipsBlender.blend();
@@ -568,7 +565,6 @@ public class High5IPS extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				ipsBlender.setMode(IpsBlender.SCREEN_BLEND);
 				ipsBlender.setAligned(alignedValue);
 				lPanel.img = ipsBlender.blend();
@@ -579,20 +575,36 @@ public class High5IPS extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				ipsBlender.setMode(IpsBlender.OVERLAY_BLEND);
 				ipsBlender.setAligned(alignedValue);
 				lPanel.img = ipsBlender.blend();
 				lPanel.repaint();
 			}
 		});
+		
 		resetBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				lPanel.img = originalBottom;
 				rPanel.img = originalTop;
+				lPanel.repaint();
+				rPanel.repaint();
+			}
+		});
+
+		swapBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BufferedImage temp = rPanel.img;
+				rPanel.img = lPanel.img;
+				lPanel.img = temp;
+				
+				temp = originalBottom;
+				originalBottom = originalTop;
+				originalTop = temp;
+				
 				lPanel.repaint();
 				rPanel.repaint();
 			}
@@ -728,7 +740,9 @@ public class High5IPS extends JFrame {
 			try {
 				newFile = new File(currentImageFilePath);
 				lPanel.img = ImageIO.read(newFile);
+				lPanel.resetScale();
 				rPanel.img = null;
+				rPanel.resetScale();
 				this.setTitle(defaultTitle+" - "+newFile.getName());
 				this.CurrentDirectory = fc.getCurrentDirectory();
 				undoStack.clear();
@@ -768,13 +782,17 @@ public class High5IPS extends JFrame {
 
 			try {
 				blendPopup.show(this,100,100);
+				if(rPanel.img != null)
+					undoStack.push(rPanel.img);
 				rPanel.img = lPanel.img;
+				undoAction.setEnabled(true);
 				originalTop = lPanel.img;
 				rPanel.setScale(lPanel.getScale());
 				lPanel.img = ImageIO.read(new File(currentImageFilePath));
 				originalBottom = lPanel.img;
 			} catch (IOException e) {
-				// TODO
+				e.printStackTrace();
+				System.exit(1);
 			}
 
 			this.CurrentDirectory = fc.getCurrentDirectory();
@@ -852,7 +870,9 @@ public class High5IPS extends JFrame {
 	 */
 	protected void closeFile() {
 		rPanel.img = null;
+		rPanel.resetScale();
 		lPanel.img = null;
+		lPanel.resetScale();
 		rPanel.repaint();
 		lPanel.repaint();
 		undoStack.clear();

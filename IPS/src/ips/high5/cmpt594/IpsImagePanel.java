@@ -101,6 +101,10 @@ public class IpsImagePanel extends JPanel{
 			throw new Exception("Scale must be > 0");
 	}
 	
+	public void resetScale(){
+		scale = 1;
+	}
+	
 	public double getScale(){
 		return scale;
 	}
