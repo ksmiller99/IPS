@@ -2,6 +2,7 @@ package ips.high5.cmpt594;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -247,6 +248,7 @@ public class High5IPS extends JFrame {
 
 		// Open method
 		openAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				openFile();
 			}
@@ -254,6 +256,7 @@ public class High5IPS extends JFrame {
 
 		// Undo method
 		undoAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				redoStack.push(lPanel.img);
 				redoAction.setEnabled(true);
@@ -276,6 +279,7 @@ public class High5IPS extends JFrame {
 
 		// Redo method
 		redoAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (rPanel.img != null)
 					undoStack.push(rPanel.img);
@@ -296,6 +300,7 @@ public class High5IPS extends JFrame {
 
 		// Zoom In method
 		zoominAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				lPanel.zoomIn();
 				lPanel.repaint();
@@ -306,6 +311,7 @@ public class High5IPS extends JFrame {
 
 		// Zoom Out method
 		zoomoutAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				lPanel.zoomOut();
 				lPanel.repaint();
@@ -316,6 +322,7 @@ public class High5IPS extends JFrame {
 
 		// Zoom Fit method
 		zoomFitAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				lPanel.scaleToFit();
 				lPanel.repaint();
@@ -326,6 +333,7 @@ public class High5IPS extends JFrame {
 
 		// Recent method
 		recentAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, "Recent file list will be here.");
 			}
@@ -333,6 +341,7 @@ public class High5IPS extends JFrame {
 
 		// New Mosaic method
 		newMosaicAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, "Multi File Picker will be here");
 			}
@@ -340,6 +349,7 @@ public class High5IPS extends JFrame {
 
 		// File|Close method
 		closeAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				closeFile();
 			}
@@ -347,6 +357,7 @@ public class High5IPS extends JFrame {
 
 		// Properties method
 		propertiesAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, "Properties dialog will be here");
 			}
@@ -354,6 +365,7 @@ public class High5IPS extends JFrame {
 
 		// Exit method
 		exitAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
@@ -361,6 +373,7 @@ public class High5IPS extends JFrame {
 
 		// Edit|Equalize method
 		equalizeAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					equalize();
@@ -372,6 +385,7 @@ public class High5IPS extends JFrame {
 
 		// Make Grayscale method
 		makeGSAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// put right panel image onto stack
 				if (rPanel.img != null)
@@ -401,6 +415,7 @@ public class High5IPS extends JFrame {
 
 		// Make RGB method
 		makeRGBAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, "Color Picker will be here");
 			}
@@ -408,6 +423,7 @@ public class High5IPS extends JFrame {
 
 		// Hough method
 		houghAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// JOptionPane.showMessageDialog(null,
 				// "Probably should be some sort of dialog box here for Hough options...");
@@ -423,6 +439,7 @@ public class High5IPS extends JFrame {
 
 		// Sharpen method
 		sharpenAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// BufferedImage sImage=new
 				// BufferedImage(lPanel.img.getWidth(),lPanel.img.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
@@ -439,6 +456,7 @@ public class High5IPS extends JFrame {
 
 		// Blend method
 		blendAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					blendWith();
@@ -450,6 +468,7 @@ public class High5IPS extends JFrame {
 
 		// Help About method
 		helpAboutAction.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, "Desinged in Montclair by High Five");
 			}
@@ -852,7 +871,7 @@ public class High5IPS extends JFrame {
 		me.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// set fullscreen
-		me.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		me.setExtendedState(Frame.MAXIMIZED_BOTH);
 
 		// set grid layout 1 row, 2 columns
 		me.setLayout(new GridLayout(1, 2));
